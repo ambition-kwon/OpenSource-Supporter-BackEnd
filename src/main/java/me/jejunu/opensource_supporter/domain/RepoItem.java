@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -23,9 +25,16 @@ public class RepoItem { //TODO: tag 구현
 
     private int viewCount;
 
+    @ElementCollection
+    private List<String> tags;
+
     private double totalPoint;
 
     private String repositoryLink;
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
