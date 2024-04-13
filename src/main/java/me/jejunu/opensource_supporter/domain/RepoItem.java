@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,12 +15,13 @@ import java.util.List;
 @Table(name = "repo_items")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RepoItem { //TODO: tag 구현
+@EntityListeners(AuditingEntityListener.class)
+public class RepoItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String repositoryName;
+    private String repoName;
 
     private String description;
 
@@ -28,28 +30,24 @@ public class RepoItem { //TODO: tag 구현
     @ElementCollection
     private List<String> tags;
 
-    private double totalPoint;
+    private int totalPoint;
 
     private String repositoryLink;
 
     @CreatedDate
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "uid")
     private User user;
 
     @OneToMany(mappedBy = "repoItem")
-    private List<SupportPoint> supportPointList;
+    private List<SupportedPoint> supportedPointList;
 
     @Builder
-    public RepoItem(String repositoryName, String description, User user) {
-        this.repositoryName = repositoryName;
+    public RepoItem(String repoName, String description, User user) {
+        this.repoName = repoName;
         this.description = description;
-        this.viewCount = 0;
-        this.totalPoint = 0.0;
-        this.repositoryLink = null;
         this.user = user;
     }
 }

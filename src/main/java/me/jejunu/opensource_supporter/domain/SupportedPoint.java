@@ -6,36 +6,37 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "support_points")
+@Table(name = "supported_points")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SupportPoint {
+@EntityListeners(AuditingEntityListener.class)
+public class SupportedPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double price;
+    private int price;
 
     private boolean isSent;
 
     @CreatedDate
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "repo_item_id")
+    @JoinColumn(name = "rid")
     private RepoItem repoItem;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "uid")
     private User user;
 
     @Builder
-    public SupportPoint(User user, RepoItem repoItem, double price) {
+    public SupportedPoint(User user, RepoItem repoItem, int price) {
         this.user = user;
         this.repoItem = repoItem;
         this.price = price;

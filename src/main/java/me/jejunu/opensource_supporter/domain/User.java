@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,8 +15,10 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
@@ -27,35 +30,31 @@ public class User {
     @Column(updatable = false)
     private String cardLink;
 
-    private double totalPoint;
+    private int totalPoint;
 
-    private double usedPoint;
+    private int usedPoint;
 
-    private double remainingPoint;
+    private int remainingPoint;
 
     private boolean isAdmin;
 
     @CreatedDate
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<RepoItem> repositories;
+    private List<RepoItem> repoItemList;
 
     @OneToMany(mappedBy = "user")
-    private List<SupportPoint> supportPointList;
+    private List<SupportedPoint> supportedPointList;
 
     @OneToMany(mappedBy = "user")
     private List<GainedPoint> gainedPointList;
 
     @Builder
+
     public User(String userName) {
         this.userName = userName;
-        this.adLink = "test_link";
-        this.cardLink = "test_link";
-        this.totalPoint = 0.0;
-        this.usedPoint = 0.0;
-        this.remainingPoint = 0.0;
-        this.isAdmin = false;
+        this.adLink = "https://www.test.com/adLink";
+        this.cardLink = "https://www.test.com/cardLink";
     }
 }
