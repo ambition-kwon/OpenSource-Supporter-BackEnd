@@ -43,9 +43,9 @@ public class GithubAuthController {
                 .orElseThrow(()->new IllegalArgumentException("user load failed"));
         return ResponseEntity.ok().body(GithubAuthResponseDto.builder()
                 .userName(userName)
-                .customName(userDataResponse.getString("name"))
-                .email(userDataResponse.getString("email"))
-                .avatarUrl(userDataResponse.getString("avatar_url"))
+                .customName(userDataResponse.optString("name", null))
+                .email(userDataResponse.optString("email", null))
+                .avatarUrl(userDataResponse.optString("avatar_url", null))
                 .build()
         );
     }

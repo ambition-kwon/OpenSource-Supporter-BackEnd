@@ -2,10 +2,12 @@ package me.jejunu.opensource_supporter.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class GithubAuthResponseDto {
     private String userName;
     private String customName;
