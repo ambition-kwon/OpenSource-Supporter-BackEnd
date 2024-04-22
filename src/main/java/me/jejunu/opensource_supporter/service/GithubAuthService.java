@@ -28,8 +28,10 @@ public class GithubAuthService {
     public Optional<User> signupOrLogin(String userName){
         Optional<User> user = userRepository.findByUserName(userName);
         if(user.isPresent()){
+            System.out.println("있는 유저입니다.");
             return user;
         } else {
+            System.out.println("최초 가입입니다.");
             User newUser = userRepository.save(User.builder()
                     .userName(userName)
                     .build()

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OpenAiService {
+public class OpenAiTranslationService {
     private final OpenAiFeignClient openAiFeignClient;
 
     public Object translateText(TranslateRequestDto request, String authorization){
