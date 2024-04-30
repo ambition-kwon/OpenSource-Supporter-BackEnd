@@ -26,20 +26,16 @@ public class GithubAuthController {
     @Value("${spring.security.oauth2.client.registration.github.client-secret}")
     private String clientSecret;
 
-//    @GetMapping("/api/auth/login")
-//    public ResponseEntity<String> redirectToGithubAuthPage(){
-//        String codeUrl = "https://github.com/login/oauth/authorize?client_id=";
-//        String url = codeUrl + clientId;
-//        return ResponseEntity.ok().body(url);
-//    }
-    @GetMapping("/api/auth/login")
+    //BackEnd 테스트용 페이지 리다이렉션 링크
+    @GetMapping("/api/auth/login/page")
     public RedirectView redirectToGithubAuthPage(){
         String codeUrl = "https://github.com/login/oauth/authorize?client_id=";
         String url = codeUrl + clientId;
         return new RedirectView(url);
     }
 
-    @GetMapping("/api/auth/login/response")
+    // http://localhost:5173/github-auth -> FrontEnd github response endpoint
+    @GetMapping("/api/auth/login")
     public ResponseEntity<Object> handleGithubLoginResponse(@RequestParam("code") String code) {
         String access_token = githubAuthService.getAccessTokenFromGithub(clientId, clientSecret, code);
         JSONObject userDataResponse = githubApiService.getUserFromGithub(access_token);
@@ -53,9 +49,7 @@ public class GithubAuthController {
 //                .email(userDataResponse.optString("email", null))
 //                .avatarUrl(userDataResponse.optString("avatar_url", null))
 //                .accessToken(access_token)
-//                .build()
-//        );
-        //http://localhost:5173/github-auth
+//                .build());
         return ResponseEntity.ok().body(userDataResponse.toString());
     }
 }
