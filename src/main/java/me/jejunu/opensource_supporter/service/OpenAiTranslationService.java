@@ -17,7 +17,8 @@ public class OpenAiTranslationService {
     public Object translateText(TranslateRequestDto request, String authorization){
         String model = "gpt-3.5-turbo";
         List<ChatGptRequestDto.ChatMessageDto> requestMessages = new ArrayList<>();
-        requestMessages.add(new ChatGptRequestDto.ChatMessageDto("user", request.getText()));
+        String prompt = "다음글을 " + request.getLanguage() + "로 번역해줘 :" + request.getText();
+        requestMessages.add(new ChatGptRequestDto.ChatMessageDto("user", prompt));
         return openAiFeignClient.getChatGpt(new ChatGptRequestDto(model, requestMessages), authorization);
     }
 }

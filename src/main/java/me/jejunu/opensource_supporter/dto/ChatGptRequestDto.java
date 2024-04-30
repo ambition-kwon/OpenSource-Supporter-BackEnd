@@ -23,7 +23,7 @@ public class ChatGptRequestDto {
         private String content;
 
         public ChatMessageDto(String role, String content) {
-            this.role = "user";
+            this.role = role;
             this.content = content;
         }
     }
