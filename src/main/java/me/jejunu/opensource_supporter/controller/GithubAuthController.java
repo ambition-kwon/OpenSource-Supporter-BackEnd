@@ -2,15 +2,15 @@ package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.User;
+import me.jejunu.opensource_supporter.dto.GithubAuthLoginResponseDto;
+import me.jejunu.opensource_supporter.dto.GithubAuthWithdrawalRequestDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -34,7 +34,7 @@ public class GithubAuthController {
         return new RedirectView(url);
     }
 
-    // http://localhost:5173/github-auth -> FrontEnd github response endpoint
+    // http://localhost:5173/github-auth -> FrontEnd GitHub response endpoint
     @GetMapping("/api/auth/login")
     public ResponseEntity<Object> handleGithubLoginResponse(@RequestParam("code") String code) {
         String access_token = githubAuthService.getAccessTokenFromGithub(clientId, clientSecret, code);
@@ -43,7 +43,7 @@ public class GithubAuthController {
         User user = githubAuthService.signupOrLogin(userName)
                 .orElseThrow(()->new IllegalArgumentException("user load failed"));
 
-//        return ResponseEntity.ok().body(GithubAuthResponseDto.builder()
+//        return ResponseEntity.ok().body(GithubAuthLoginResponseDto.builder()
 //                .userName(userName)
 //                .customName(userDataResponse.optString("name", null))
 //                .email(userDataResponse.optString("email", null))
@@ -51,5 +51,11 @@ public class GithubAuthController {
 //                .accessToken(access_token)
 //                .build());
         return ResponseEntity.ok().body(userDataResponse.toString());
+    }
+
+    @DeleteMapping("api/auth/withdrawal")
+    public ResponseEntity<Void> handleGithubAccountTermination(@RequestBody GithubAuthWithdrawalRequestDto request){
+        githubAuthService.accountTermination(clientId, clientSecret, request);
+        return ResponseEntity.ok().build();
     }
 }

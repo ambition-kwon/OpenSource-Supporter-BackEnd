@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-public class GithubAuthResponseDto {
+public class GithubAuthLoginResponseDto {
     private String userName;
     private String customName;
     private String email;
@@ -16,7 +16,7 @@ public class GithubAuthResponseDto {
     private String accessToken;
 
     @Builder
-    public GithubAuthResponseDto(String userName, String customName, String email, String avatarUrl, String accessToken) {
+    public GithubAuthLoginResponseDto(String userName, String customName, String email, String avatarUrl, String accessToken) {
         this.userName = userName;
         this.customName = customName;
         this.email = email;

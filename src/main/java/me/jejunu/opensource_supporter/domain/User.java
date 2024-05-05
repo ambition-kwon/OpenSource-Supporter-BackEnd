@@ -55,7 +55,6 @@ public class User {
     private List<GainedPoint> gainedPointList;
 
     @Builder
-
     public User(String userName) {
         this.userName = userName;
         this.adLink = "https://www.test.com/adLink";
