@@ -27,7 +27,6 @@ public class RepoItemService {
     private final RepoItemRepository repoItemRepository;
     private final UserRepository userRepository;
     public RepoItem createRepoItem(RepoItemCreateRequestDto request) {
-
         String access_token = request.getAccess_token();
         String userName = request.getUserName();
         String repoName = request.getRepoName();
@@ -43,7 +42,8 @@ public class RepoItemService {
         JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, access_token));
         LocalDateTime lastCommitAt = findLastCommitAt(commitResponse); //Github측에서 받아오도록 구성
         //userID
-        User user = findUserId(userName);
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(()->new IllegalArgumentException("not found user"));
 
         System.out.println("userId = " + user.getId());
         System.out.println("Access Token: " + access_token);
@@ -67,10 +67,11 @@ public class RepoItemService {
                 .lastCommitAt(lastCommitAt)
                 .build();
 
-        if(isRepoItemExists(repoName, user)){
-            throw new RuntimeException("레포 등록 중복 에러");
-        }
+        System.out.println(newRepoItem.toString());
 
+        if(isRepoItemExists(repoName, user)){
+            throw new RuntimeException("동일 사용자 중복 레포지토리 등록 에러");
+        }
 
         return repoItemRepository.save(newRepoItem);
     }
@@ -100,13 +101,10 @@ public class RepoItemService {
 
             // "license" 키의 값을 추출합니다.
             JSONObject licenseObject = licenseResponse.getJSONObject("license");
-            // "name" 키의 값을 추출하여 license 변수에 저장합니다.
-            String license = licenseObject.getString("name");
-            // license 변수를 리턴합니다.
-            return license;
+            // "name" 키의 값을 추출하여 license 변수에 저장하고 리턴합니다.
+            return licenseObject.getString("name");
         } catch (Exception e) {
-            // 예외가 발생하면 null을 반환합니다.
-            e.printStackTrace(); // 예외 상황을 로깅합니다.
+            e.printStackTrace();
             return "none License";
         }
     }
@@ -121,13 +119,7 @@ public class RepoItemService {
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(pushedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             lastCommitAt = zonedDateTime.toLocalDateTime();
         }
-
         return lastCommitAt;
-    }
-
-    public User findUserId(String userName) {
-        return userRepository.findByUserName(userName)
-                .orElseThrow(()->new IllegalArgumentException("not found user"));
     }
 
     private boolean isRepoItemExists(String repoName, User user) {
