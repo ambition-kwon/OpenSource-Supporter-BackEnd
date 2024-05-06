@@ -4,8 +4,10 @@ import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.config.GithubApiFeignClient;
 import me.jejunu.opensource_supporter.domain.RepoItem;
+import me.jejunu.opensource_supporter.domain.User;
 import me.jejunu.opensource_supporter.dto.RepoItemCreateRequestDto;
 import me.jejunu.opensource_supporter.repository.RepoItemRepository;
+import me.jejunu.opensource_supporter.repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -16,13 +18,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class RepoItemService {
     private final GithubApiFeignClient githubApiFeignClient;
     private final RepoItemRepository repoItemRepository;
+    private final UserRepository userRepository;
     public RepoItem createRepoItem(RepoItemCreateRequestDto request) {
+
         String access_token = request.getAccess_token();
         String userName = request.getUserName();
         String repoName = request.getRepoName();
@@ -32,16 +37,42 @@ public class RepoItemService {
         //MostLanguage
         JSONObject mostLanguageResponse = new JSONObject(githubApiFeignClient.getMostLanguage(userName, repoName, access_token));
         String mostLanguage = findMostUsedLanguage(mostLanguageResponse);
-        System.out.println("mostLanguageJSON = " + mostLanguage);
         //License
         String license = findLicense(userName, repoName, access_token);
-        System.out.println("licenseResponse = " + license);
         //LastCommitAt
         JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, access_token));
-        //System.out.println("commitResponse = " + commitResponse);
         LocalDateTime lastCommitAt = findLastCommitAt(commitResponse); //Github측에서 받아오도록 구성
+        //userID
+        User user = findUserId(userName);
+
+        System.out.println("userId = " + user.getId());
+        System.out.println("Access Token: " + access_token);
+        System.out.println("User Name: " + userName);
+        System.out.println("Repository Name: " + repoName);
+        System.out.println("Description: " + description);
+        System.out.println("Tags: " + tags);
+        System.out.println("Repository Link: " + repositoryLink);
+        System.out.println("mostLanguageJSON = " + mostLanguage);
+        System.out.println("licenseResponse = " + license);
         System.out.println("lastCommitAt = " + lastCommitAt);
-        return repoItemRepository.save(RepoItem.builder().build());
+
+        RepoItem newRepoItem = RepoItem.builder()
+                .user(user)
+                .repoName(repoName)
+                .description(description)
+                .tags(tags)
+                .repositoryLink(repositoryLink)
+                .mostLanguage(mostLanguage)
+                .license(license)
+                .lastCommitAt(lastCommitAt)
+                .build();
+
+        if(isRepoItemExists(repoName, user)){
+            throw new RuntimeException("레포 등록 중복 에러");
+        }
+
+
+        return repoItemRepository.save(newRepoItem);
     }
 
     public String findMostUsedLanguage(JSONObject mostLanguageJSON) {
@@ -76,7 +107,7 @@ public class RepoItemService {
         } catch (Exception e) {
             // 예외가 발생하면 null을 반환합니다.
             e.printStackTrace(); // 예외 상황을 로깅합니다.
-            return null;
+            return "none License";
         }
     }
 
@@ -94,7 +125,13 @@ public class RepoItemService {
         return lastCommitAt;
     }
 
+    public User findUserId(String userName) {
+        return userRepository.findByUserName(userName)
+                .orElseThrow(()->new IllegalArgumentException("not found user"));
+    }
 
-
-
+    private boolean isRepoItemExists(String repoName, User user) {
+        Optional<RepoItem> existingRepoItem = repoItemRepository.findByRepoNameAndUser(repoName, user);
+        return existingRepoItem.isPresent();
+    }
 }
