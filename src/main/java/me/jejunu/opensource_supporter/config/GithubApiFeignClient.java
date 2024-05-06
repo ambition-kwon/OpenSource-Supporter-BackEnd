@@ -18,4 +18,36 @@ public interface GithubApiFeignClient {
             @RequestHeader("Authorization") String authorization,
             @RequestBody GithubAuthWithdrawalRequestDto request
     );
+
+
+
+    // 모스트 랭귀지
+    @GetMapping(value = "/repos/{owner}/{repo}/languages",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    String getMostLanguage(
+            @PathVariable("owner") String owner,
+            @PathVariable("repo") String repo,
+            @RequestHeader("Authorization") String authorization
+    );
+
+    // 라이센스
+    @GetMapping(value = "/repos/{owner}/{repo}/license"
+            ,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            ,produces = MediaType.APPLICATION_JSON_VALUE)
+    String getRepoLicense(
+            @PathVariable("owner") String owner,
+            @PathVariable("repo") String repo,
+            @RequestHeader("Authorization") String authorization
+    );
+
+    // last commit
+    @GetMapping(value = "/repos/{owner}/{repo}"
+            , consumes =  MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    String getCommitSha(
+            @PathVariable("owner") String owner,
+            @PathVariable("repo") String repo,
+            @RequestHeader("Authorication") String authorization
+    );
 }
