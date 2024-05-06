@@ -37,6 +37,7 @@ public class GithubAuthController {
     @GetMapping("/api/auth/login")
     public ResponseEntity<Object> handleGithubLoginResponse(@RequestParam("code") String code) {
         String access_token = githubAuthService.getAccessTokenFromGithub(clientId, clientSecret, code);
+        System.out.println("`access_token` = " + access_token);
         JSONObject userDataResponse = githubApiService.getUserFromGithub(access_token);
         String userName = userDataResponse.getString("login");
         User user = githubAuthService.signupOrLogin(userName)
