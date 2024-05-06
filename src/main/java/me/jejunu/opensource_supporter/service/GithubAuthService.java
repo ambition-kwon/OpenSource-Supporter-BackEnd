@@ -22,7 +22,7 @@ public class GithubAuthService {
     private final UserRepository userRepository;
 
     public String getAccessTokenFromGithub(String clientId, String clientSecret, String code) {
-        Object response = githubAuthFeignClient.getAcessToken(clientId, clientSecret, code);
+        Object response = githubAuthFeignClient.getAccessToken(clientId, clientSecret, code);
         JSONObject jsonObject = new JSONObject(response.toString());
         if(jsonObject.has("error")){
             throw new RuntimeException("GitHub 엑세스 토큰 요청 실패 : " + jsonObject.getString("error"));

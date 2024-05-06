@@ -1,5 +1,6 @@
 package me.jejunu.opensource_supporter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,6 +33,7 @@ public class GainedPoint {
     private LocalDateTime modifiedAt;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "uid")
     private User user;
 
