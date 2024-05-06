@@ -2,7 +2,6 @@ package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.User;
-import me.jejunu.opensource_supporter.dto.GithubAuthLoginResponseDto;
 import me.jejunu.opensource_supporter.dto.GithubAuthWithdrawalRequestDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;

@@ -26,14 +26,20 @@ public class RepoItem {
 
     private String description;
 
-    private int viewCount;
-
     @ElementCollection
     private List<String> tags;
 
-    private int totalPoint;
+    private String mostLanguage;
+
+    private String license;
 
     private String repositoryLink;
+
+    private int viewCount;
+
+    private int totalPoint;
+
+    private LocalDateTime lastCommitAt;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -49,9 +55,14 @@ public class RepoItem {
     private List<SupportedPoint> supportedPointList;
 
     @Builder
-    public RepoItem(String repoName, String description, User user) {
+    public RepoItem(User user, String repoName, String description, List<String> tags, String mostLanguage, String license, LocalDateTime lastCommitAt, String repositoryLink) {
+        this.user = user;
         this.repoName = repoName;
         this.description = description;
-        this.user = user;
+        this.tags = tags;
+        this.repositoryLink = repositoryLink;
+        this.mostLanguage = mostLanguage;
+        this.license = license;
+        this.lastCommitAt = lastCommitAt;
     }
 }
