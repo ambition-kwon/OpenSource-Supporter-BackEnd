@@ -2,7 +2,7 @@ package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.User;
-import me.jejunu.opensource_supporter.dto.GithubAuthWithdrawalRequestDto;
+import me.jejunu.opensource_supporter.dto.GithubTokenDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;
 import org.json.JSONObject;
@@ -53,9 +53,15 @@ public class GithubAuthController {
         return ResponseEntity.ok().body(userDataResponse.toString());
     }
 
-    @DeleteMapping("api/auth/withdrawal")
-    public ResponseEntity<Void> handleGithubAccountTermination(@RequestBody GithubAuthWithdrawalRequestDto request){
-        githubAuthService.accountTermination(clientId, clientSecret, request);
+    @DeleteMapping("/api/auth/logout")
+    public ResponseEntity<Void> handleGithubAccountLogout(@RequestHeader("Authorization") String authHeader){
+        githubAuthService.tokenTermination(clientId, clientSecret, authHeader);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/api/auth/withdrawal")
+    public ResponseEntity<Void> handleGithubAccountTermination(@RequestHeader("Authorization") String authHeader){
+        githubAuthService.accountTermination(clientId, clientSecret, authHeader);
         return ResponseEntity.ok().build();
     }
 }

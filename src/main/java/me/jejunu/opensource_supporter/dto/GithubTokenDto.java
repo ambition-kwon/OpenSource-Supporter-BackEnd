@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GithubAuthWithdrawalRequestDto {
+public class GithubTokenDto {
     private String access_token;
 }

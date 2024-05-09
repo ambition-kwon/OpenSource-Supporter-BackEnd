@@ -16,27 +16,27 @@ public class RepoItemController {
     private final RepoItemService repoItemService;
 
     @PostMapping("/api/repo")
-    public ResponseEntity<RepoItem> createRepoItem(@RequestBody RepoItemCreateRequestDto request){
-        RepoItem repoItem = repoItemService.createRepoItem(request);
+    public ResponseEntity<RepoItem> createRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemCreateRequestDto request){
+        RepoItem repoItem = repoItemService.createRepoItem(authHeader, request);
         return ResponseEntity.ok().body(repoItem);
     }
 
     @PutMapping("/api/repo")
-    public ResponseEntity<RepoItem> updateRepoItem(@RequestBody RepoItemUpdateRequestDto request){
-        RepoItem repoItem = repoItemService.updateRepoItem(request);
+    public ResponseEntity<RepoItem> updateRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemUpdateRequestDto request){
+        RepoItem repoItem = repoItemService.updateRepoItem(authHeader, request);
         return ResponseEntity.ok().body(repoItem);
     }
 
     @DeleteMapping("/api/repo")
-    public ResponseEntity<Void> deleteRepoItem(@RequestBody RepoItemDeleteRequestDto request){
-        repoItemService.deleteRepoItem(request);
+    public ResponseEntity<Void> deleteRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemDeleteRequestDto request){
+        repoItemService.deleteRepoItem(authHeader, request);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/api/repo")
-    public ResponseEntity<RepoItem> readRepoItem(){
-        //구현하자.
-        return ResponseEntity.ok().build();
+    public ResponseEntity<RepoItem> readSingleRepoItem(@RequestParam("id") Long id){
+        RepoItem repoItem = repoItemService.readSingleRepoItem(id);
+        return ResponseEntity.ok().body(repoItem);
     }
 
     @PutMapping("/api/repo/view-count")

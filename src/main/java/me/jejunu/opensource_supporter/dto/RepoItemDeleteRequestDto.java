@@ -10,6 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RepoItemDeleteRequestDto {
-    private String access_token;
     private Long repoId;
 }

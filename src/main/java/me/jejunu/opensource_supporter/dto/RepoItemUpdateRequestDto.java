@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RepoItemUpdateRequestDto {
-    private String access_token;
     private Long repoId;
     private String description;
     private List<String> tags;

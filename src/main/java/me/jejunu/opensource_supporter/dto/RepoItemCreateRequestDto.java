@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RepoItemCreateRequestDto {
-    private String access_token;
     private String userName;
     private String repoName;
     private String description;

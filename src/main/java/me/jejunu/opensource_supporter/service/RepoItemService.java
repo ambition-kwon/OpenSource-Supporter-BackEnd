@@ -18,12 +18,14 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class RepoItemService {
     private final GithubApiFeignClient githubApiFeignClient;
+    private final GithubApiService githubApiService;
     private final RepoItemRepository repoItemRepository;
     private final UserRepository userRepository;
 
@@ -36,26 +38,42 @@ public class RepoItemService {
         return responseRepoItem;
     }
 
-    @Transactional
-    public void deleteRepoItem(RepoItemDeleteRequestDto request){
-        //구현하자
+    @Transactional(readOnly = true)
+    public RepoItem readSingleRepoItem(Long id){
+        return repoItemRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("not found RepoItem"));
     }
 
     @Transactional
-    public RepoItem updateRepoItem(RepoItemUpdateRequestDto request) {
-        String access_token = request.getAccess_token();
+    public void deleteRepoItem(String authHeader, RepoItemDeleteRequestDto request){
+        String userToken = authHeader.replace("Bearer ", "");
+        JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
+        String userName = userDataResponse.getString("login");
+        RepoItem deleteRepoItem = repoItemRepository.findById(request.getRepoId())
+                .orElseThrow(()->new IllegalArgumentException("not found repoItem"));
+        if(Objects.equals(userName, deleteRepoItem.getUser().getUserName())){
+            repoItemRepository.deleteById(request.getRepoId());
+        }
+        else{
+            throw new RuntimeException("token 소유자, Repo 소유자 불일치");
+        }
+    }
+
+    @Transactional
+    public RepoItem updateRepoItem(String authHeader, RepoItemUpdateRequestDto request) {
+        String userToken = authHeader.replace("Bearer ", "");
         Long repoId = request.getRepoId();
         RepoItem updateRepoItem = repoItemRepository.findById(repoId)
                 .orElseThrow(()->new IllegalArgumentException("not found repoItem"));
         String userName = updateRepoItem.getUser().getUserName();
         String repoName = updateRepoItem.getRepoName();
         //MostLanguage
-        JSONObject mostLanguageResponse = new JSONObject(githubApiFeignClient.getMostLanguage(userName, repoName, access_token));
+        JSONObject mostLanguageResponse = new JSONObject(githubApiFeignClient.getMostLanguage(userName, repoName, userToken));
         String mostLanguage = findMostUsedLanguage(mostLanguageResponse);
         //License
-        String license = findLicense(userName, repoName, access_token);
+        String license = findLicense(userName, repoName, userToken);
         //LastCommitAt
-        JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, access_token));
+        JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, userToken));
         LocalDateTime lastCommitAt = findLastCommitAt(commitResponse);
 
         updateRepoItem.update(request.getDescription(), request.getTags(), mostLanguage, license, lastCommitAt);
@@ -64,20 +82,20 @@ public class RepoItemService {
     }
 
     @Transactional
-    public RepoItem createRepoItem(RepoItemCreateRequestDto request) {
-        String access_token = request.getAccess_token();
+    public RepoItem createRepoItem(String authHeader, RepoItemCreateRequestDto request) {
+        String userToken = authHeader.replace("Bearer ", "");
         String userName = request.getUserName();
         String repoName = request.getRepoName();
         String description = request.getDescription();
         List<String> tags = request.getTags();
         String repositoryLink = "https://github.com/" + userName + "/" + repoName;
         //MostLanguage
-        JSONObject mostLanguageResponse = new JSONObject(githubApiFeignClient.getMostLanguage(userName, repoName, access_token));
+        JSONObject mostLanguageResponse = new JSONObject(githubApiFeignClient.getMostLanguage(userName, repoName, userToken));
         String mostLanguage = findMostUsedLanguage(mostLanguageResponse);
         //License
-        String license = findLicense(userName, repoName, access_token);
+        String license = findLicense(userName, repoName, userToken);
         //LastCommitAt
-        JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, access_token));
+        JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, userToken));
         LocalDateTime lastCommitAt = findLastCommitAt(commitResponse);
         //userID
         User user = userRepository.findByUserName(userName)
