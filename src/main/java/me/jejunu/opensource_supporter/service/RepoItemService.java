@@ -1,23 +1,23 @@
 package me.jejunu.opensource_supporter.service;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.config.GithubApiFeignClient;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
 import me.jejunu.opensource_supporter.dto.RepoItemCreateRequestDto;
+import me.jejunu.opensource_supporter.dto.RepoItemDeleteRequestDto;
+import me.jejunu.opensource_supporter.dto.RepoItemUpdateRequestDto;
 import me.jejunu.opensource_supporter.repository.RepoItemRepository;
 import me.jejunu.opensource_supporter.repository.UserRepository;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -26,6 +26,44 @@ public class RepoItemService {
     private final GithubApiFeignClient githubApiFeignClient;
     private final RepoItemRepository repoItemRepository;
     private final UserRepository userRepository;
+
+    @Transactional
+    public RepoItem increaseViewCount(Long id){
+        RepoItem responseRepoItem = repoItemRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("not found RepoItem"));
+        responseRepoItem.setViewCount(responseRepoItem.getViewCount() + 1);
+
+        return responseRepoItem;
+    }
+
+    @Transactional
+    public void deleteRepoItem(RepoItemDeleteRequestDto request){
+        //구현하자
+    }
+
+    @Transactional
+    public RepoItem updateRepoItem(RepoItemUpdateRequestDto request) {
+        String access_token = request.getAccess_token();
+        Long repoId = request.getRepoId();
+        RepoItem updateRepoItem = repoItemRepository.findById(repoId)
+                .orElseThrow(()->new IllegalArgumentException("not found repoItem"));
+        String userName = updateRepoItem.getUser().getUserName();
+        String repoName = updateRepoItem.getRepoName();
+        //MostLanguage
+        JSONObject mostLanguageResponse = new JSONObject(githubApiFeignClient.getMostLanguage(userName, repoName, access_token));
+        String mostLanguage = findMostUsedLanguage(mostLanguageResponse);
+        //License
+        String license = findLicense(userName, repoName, access_token);
+        //LastCommitAt
+        JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, access_token));
+        LocalDateTime lastCommitAt = findLastCommitAt(commitResponse);
+
+        updateRepoItem.update(request.getDescription(), request.getTags(), mostLanguage, license, lastCommitAt);
+
+        return updateRepoItem;
+    }
+
+    @Transactional
     public RepoItem createRepoItem(RepoItemCreateRequestDto request) {
         String access_token = request.getAccess_token();
         String userName = request.getUserName();
@@ -40,21 +78,10 @@ public class RepoItemService {
         String license = findLicense(userName, repoName, access_token);
         //LastCommitAt
         JSONObject commitResponse = new JSONObject(githubApiFeignClient.getCommitSha(userName, repoName, access_token));
-        LocalDateTime lastCommitAt = findLastCommitAt(commitResponse); //Github측에서 받아오도록 구성
+        LocalDateTime lastCommitAt = findLastCommitAt(commitResponse);
         //userID
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(()->new IllegalArgumentException("not found user"));
-
-        System.out.println("userId = " + user.getId());
-        System.out.println("Access Token: " + access_token);
-        System.out.println("User Name: " + userName);
-        System.out.println("Repository Name: " + repoName);
-        System.out.println("Description: " + description);
-        System.out.println("Tags: " + tags);
-        System.out.println("Repository Link: " + repositoryLink);
-        System.out.println("mostLanguageJSON = " + mostLanguage);
-        System.out.println("licenseResponse = " + license);
-        System.out.println("lastCommitAt = " + lastCommitAt);
 
         RepoItem newRepoItem = RepoItem.builder()
                 .user(user)
@@ -66,8 +93,6 @@ public class RepoItemService {
                 .license(license)
                 .lastCommitAt(lastCommitAt)
                 .build();
-
-        System.out.println(newRepoItem.toString());
 
         if(isRepoItemExists(repoName, user)){
             throw new RuntimeException("동일 사용자 중복 레포지토리 등록 에러");
@@ -105,7 +130,7 @@ public class RepoItemService {
             return licenseObject.getString("name");
         } catch (Exception e) {
             e.printStackTrace();
-            return "none License";
+            return "Unlicensed";
         }
     }
 

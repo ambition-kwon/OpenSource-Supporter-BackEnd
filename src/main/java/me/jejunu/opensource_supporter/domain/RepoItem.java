@@ -2,10 +2,7 @@ package me.jejunu.opensource_supporter.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Setter
 @Entity
 @Table(name = "repo_items")
 @Getter
@@ -36,6 +34,7 @@ public class RepoItem {
 
     private String repositoryLink;
 
+    @Setter
     private int viewCount;
 
     private int totalPoint;
@@ -55,6 +54,15 @@ public class RepoItem {
 
     @OneToMany(mappedBy = "repoItem")
     private List<SupportedPoint> supportedPointList;
+
+
+    public void update(String description, List<String> tags, String mostLanguage, String license, LocalDateTime lastCommitAt){
+        this.description = description;
+        this.tags = tags;
+        this.mostLanguage = mostLanguage;
+        this.license = license;
+        this.lastCommitAt = lastCommitAt;
+    }
 
     @Builder
     public RepoItem(User user, String repoName, String description, List<String> tags, String mostLanguage, String license, LocalDateTime lastCommitAt, String repositoryLink) {
