@@ -4,16 +4,25 @@ import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.dto.RepoItemCreateRequestDto;
 import me.jejunu.opensource_supporter.dto.RepoItemDeleteRequestDto;
+import me.jejunu.opensource_supporter.dto.RepoItemModalResponseDto;
 import me.jejunu.opensource_supporter.dto.RepoItemUpdateRequestDto;
 import me.jejunu.opensource_supporter.service.RepoItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
 public class RepoItemController {
     private final RepoItemService repoItemService;
+
+    @GetMapping("/api/repos/modal")
+    public ResponseEntity<List<RepoItemModalResponseDto>> readMultipleRepoItems(@RequestHeader("Authorization") String authHeader){
+        List<RepoItemModalResponseDto> repos = repoItemService.readMultipleRepoItems(authHeader);
+        return ResponseEntity.ok().body(repos);
+    }
 
     @PostMapping("/api/repo")
     public ResponseEntity<RepoItem> createRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemCreateRequestDto request){

@@ -16,7 +16,9 @@ public interface GithubApiFeignClient {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     String getUserRepoItem(@RequestHeader("Authorization") String authorization,
-                           @PathVariable("userName") String userName);
+                           @PathVariable("userName") String userName,
+                           @RequestParam("sort") String sortRule,
+                           @RequestParam("per_page") Integer perPageRule);
 
     @DeleteMapping(value = "/applications/{clientId}/grant")
     void accountTermination(

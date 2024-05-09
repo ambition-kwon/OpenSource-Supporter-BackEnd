@@ -6,9 +6,11 @@ import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
 import me.jejunu.opensource_supporter.dto.RepoItemCreateRequestDto;
 import me.jejunu.opensource_supporter.dto.RepoItemDeleteRequestDto;
+import me.jejunu.opensource_supporter.dto.RepoItemModalResponseDto;
 import me.jejunu.opensource_supporter.dto.RepoItemUpdateRequestDto;
 import me.jejunu.opensource_supporter.repository.RepoItemRepository;
 import me.jejunu.opensource_supporter.repository.UserRepository;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +27,38 @@ public class RepoItemService {
     private final GithubApiService githubApiService;
     private final RepoItemRepository repoItemRepository;
     private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    public List<RepoItemModalResponseDto> readMultipleRepoItems(String authHeader){
+        String userToken = authHeader.replace("Bearer ", "");
+        JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
+        String userName = userDataResponse.getString("login");
+        Object response = githubApiFeignClient.getUserRepoItem(authHeader, userName, "updated", 100);
+        List<RepoItemModalResponseDto> result = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(response.toString());
+
+        for(int i = 0; i < jsonArray.length(); i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String repoName = jsonObject.getString("name");
+            int forkCount = jsonObject.getInt("forks_count");
+            int starCount = jsonObject.getInt("stargazers_count");
+            LocalDateTime lastCommitAt = LocalDateTime.parse(jsonObject.getString("pushed_at"),DateTimeFormatter.ISO_DATE_TIME);
+
+            Optional<RepoItem> repoItem = repoItemRepository.findByRepoName(repoName);
+            Long repoId = repoItem.map(RepoItem::getId).orElse(null);
+            boolean posted = repoItem.isPresent();
+
+            result.add(RepoItemModalResponseDto.builder()
+                    .repoId(repoId)
+                    .repoName(repoName)
+                    .forkCount(forkCount)
+                    .starCount(starCount)
+                    .lastCommitAt(lastCommitAt)
+                    .posted(posted)
+                    .build());
+        }
+        return result;
+    }
 
     @Transactional
     public RepoItem increaseViewCount(Long id){
