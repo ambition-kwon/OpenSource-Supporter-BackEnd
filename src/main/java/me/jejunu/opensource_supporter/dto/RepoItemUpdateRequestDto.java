@@ -11,9 +11,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RepoItemCreateRequestDto {
-    private String userName;
-    private String repoName;
+public class RepoItemUpdateRequestDto {
+    private Long repoId;
     private String description;
     private List<String> tags;
 }

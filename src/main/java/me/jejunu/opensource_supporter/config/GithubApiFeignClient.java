@@ -1,6 +1,6 @@
 package me.jejunu.opensource_supporter.config;
 
-import me.jejunu.opensource_supporter.dto.GithubAuthWithdrawalRequestDto;
+import me.jejunu.opensource_supporter.dto.GithubTokenDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +12,26 @@ public interface GithubApiFeignClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     String getUser(@RequestHeader("Authorization") String authorization);
 
+    @GetMapping(value = "/users/{userName}/repos",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    String getUserRepoItem(@RequestHeader("Authorization") String authorization,
+                           @PathVariable("userName") String userName,
+                           @RequestParam("sort") String sortRule,
+                           @RequestParam("per_page") Integer perPageRule);
+
     @DeleteMapping(value = "/applications/{clientId}/grant")
     void accountTermination(
             @PathVariable("clientId") String clientId,
             @RequestHeader("Authorization") String authorization,
-            @RequestBody GithubAuthWithdrawalRequestDto request
+            @RequestBody GithubTokenDto request
+    );
+
+    @DeleteMapping(value = "/applications/{clientId}/token")
+    void tokenTermination(
+            @PathVariable("clientId") String clientId,
+            @RequestHeader("Authorization") String authorization,
+            @RequestBody GithubTokenDto request
     );
 
     @GetMapping(value = "/repos/{owner}/{repo}/languages",
