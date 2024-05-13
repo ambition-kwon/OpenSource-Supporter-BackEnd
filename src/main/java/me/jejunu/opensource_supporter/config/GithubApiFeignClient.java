@@ -20,6 +20,13 @@ public interface GithubApiFeignClient {
                            @RequestParam("sort") String sortRule,
                            @RequestParam("per_page") Integer perPageRule);
 
+    @GetMapping(value ="/repos/{owner}/{repo}"
+            ,consumes = MediaType.APPLICATION_JSON_VALUE
+            ,produces = MediaType.APPLICATION_JSON_VALUE)
+    String getUserSingleRepoItem(@RequestHeader("Authorization") String authorization,
+                                 @PathVariable("owner") String owner,
+                                 @PathVariable("repo") String repo);
+
     @DeleteMapping(value = "/applications/{clientId}/grant")
     void accountTermination(
             @PathVariable("clientId") String clientId,
