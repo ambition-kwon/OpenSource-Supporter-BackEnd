@@ -1,11 +1,9 @@
 package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
 import me.jejunu.opensource_supporter.domain.RepoItem;
-import me.jejunu.opensource_supporter.dto.RepoItemCreateRequestDto;
-import me.jejunu.opensource_supporter.dto.RepoItemDeleteRequestDto;
-import me.jejunu.opensource_supporter.dto.RepoItemModalResponseDto;
-import me.jejunu.opensource_supporter.dto.RepoItemUpdateRequestDto;
+import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.service.RepoItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +15,7 @@ import java.util.List;
 @CrossOrigin
 public class RepoItemController {
     private final RepoItemService repoItemService;
+    private final RecommendedRepoItemScheduling recommendedRepoItemScheduling;
 
     @GetMapping("/api/repos/modal")
     public ResponseEntity<List<RepoItemModalResponseDto>> readMultipleRepoItems(@RequestHeader("Authorization") String authHeader){
@@ -52,5 +51,24 @@ public class RepoItemController {
     public ResponseEntity<RepoItem> increaseViewCount(@RequestParam("id") Long id){
         RepoItem responseRepoItem = repoItemService.increaseViewCount(id);
         return ResponseEntity.ok().body(responseRepoItem);
+    }
+
+    @GetMapping("/api/repo/recommended/recentlyCommit")
+    public ResponseEntity<RecommendedRepoCardDto> getRecentlyCommit(){
+        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
+        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
+    }
+    //@Cacheable
+    @GetMapping("/api/repo/recommended/myPartners")
+    public ResponseEntity<RecommendedRepoCardDto> getMyPartners(){
+        //RepoItem myPartnersResponseEntity = 캐싱에서 가져오기
+        //return ResponseEntity.ok().body(myPartnersResponseEntity);
+        return null;
+    }
+    //@Cacheable
+    @GetMapping("/api/repo/recommended/mostViewed")
+    public ResponseEntity<RecommendedRepoCardDto> getMostViewed(){
+        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
+        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
     }
 }

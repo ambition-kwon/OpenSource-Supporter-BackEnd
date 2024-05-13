@@ -1,16 +1,23 @@
 package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.jejunu.opensource_supporter.config.CacheChecker;
+import me.jejunu.opensource_supporter.config.GithubApiFeignClient;
+import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
+import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
-import me.jejunu.opensource_supporter.dto.GithubTokenDto;
+import me.jejunu.opensource_supporter.dto.RecommendedRepoCardDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +26,8 @@ public class GithubAuthController {
 
     private final GithubAuthService githubAuthService;
     private final GithubApiService githubApiService;
+    private final GithubApiFeignClient githubApiFeignClient;
+    private final RecommendedRepoItemScheduling recommendedRepoItemScheduling;
 
     @Value("${spring.security.oauth2.client.registration.github.client-id}")
     private String clientId;
@@ -43,6 +52,8 @@ public class GithubAuthController {
         User user = githubAuthService.signupOrLogin(userName)
                 .orElseThrow(()->new IllegalArgumentException("user load failed"));
 
+        // 로그인 시 추천 레포 목록 받아오는 서비스 로직
+
 //        return ResponseEntity.ok().body(GithubAuthLoginResponseDto.builder()
 //                .userName(userName)
 //                .customName(userDataResponse.optString("name", null))
@@ -63,5 +74,13 @@ public class GithubAuthController {
     public ResponseEntity<Void> handleGithubAccountTermination(@RequestHeader("Authorization") String authHeader){
         githubAuthService.accountTermination(clientId, clientSecret, authHeader);
         return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/api/test")
+    public ResponseEntity<RecommendedRepoCardDto> testTest() {
+        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
+        List<RepoItem> repoResult2 = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
+        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
     }
 }

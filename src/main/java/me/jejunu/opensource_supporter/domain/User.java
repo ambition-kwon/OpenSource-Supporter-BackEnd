@@ -45,7 +45,7 @@ public class User {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<RepoItem> repoItemList;
 
     @OneToMany(mappedBy = "user")
