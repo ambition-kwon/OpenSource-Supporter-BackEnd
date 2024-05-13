@@ -2,6 +2,7 @@ package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.User;
+import me.jejunu.opensource_supporter.dto.GithubAuthLoginResponseDto;
 import me.jejunu.opensource_supporter.dto.GithubTokenDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;
@@ -43,14 +44,15 @@ public class GithubAuthController {
         User user = githubAuthService.signupOrLogin(userName)
                 .orElseThrow(()->new IllegalArgumentException("user load failed"));
 
-//        return ResponseEntity.ok().body(GithubAuthLoginResponseDto.builder()
-//                .userName(userName)
-//                .customName(userDataResponse.optString("name", null))
-//                .email(userDataResponse.optString("email", null))
-//                .avatarUrl(userDataResponse.optString("avatar_url", null))
-//                .accessToken(access_token)
-//                .build());
-        return ResponseEntity.ok().body(userDataResponse.toString());
+        return ResponseEntity.ok().body(GithubAuthLoginResponseDto.builder()
+                .userName(userName)
+                .customName(userDataResponse.optString("name", null))
+                .email(userDataResponse.optString("email", null))
+                .avatarUrl(userDataResponse.optString("avatar_url", null))
+                .accessToken(access_token)
+                .remainingPoint(user.getRemainingPoint())
+                .totalPoint(user.getTotalPoint())
+                .build());
     }
 
     @DeleteMapping("/api/auth/logout")

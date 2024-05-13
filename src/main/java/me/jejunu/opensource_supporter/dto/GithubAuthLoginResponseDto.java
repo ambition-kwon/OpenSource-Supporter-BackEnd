@@ -14,13 +14,17 @@ public class GithubAuthLoginResponseDto {
     private String email;
     private String avatarUrl;
     private String accessToken;
+    private int remainingPoint;
+    private int totalPoint;
 
     @Builder
-    public GithubAuthLoginResponseDto(String userName, String customName, String email, String avatarUrl, String accessToken) {
+    public GithubAuthLoginResponseDto(String userName, String customName, String email, String avatarUrl, String accessToken, int remainingPoint, int totalPoint) {
         this.userName = userName;
         this.customName = customName;
         this.email = email;
         this.avatarUrl = avatarUrl;
         this.accessToken = accessToken;
+        this.remainingPoint = remainingPoint;
+        this.totalPoint = totalPoint;
     }
 }
