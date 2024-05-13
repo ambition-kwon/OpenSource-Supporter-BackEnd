@@ -169,7 +169,7 @@ public class RepoItemService {
 
         return mostUsedLanguage;
     }
-    private String findLicense(String userName, String repoName, String access_token) {
+    public String findLicense(String userName, String repoName, String access_token) {
         try {
             JSONObject licenseResponse = new JSONObject(githubApiFeignClient.getRepoLicense(userName, repoName, access_token));
 
