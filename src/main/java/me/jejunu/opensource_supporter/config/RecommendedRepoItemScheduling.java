@@ -76,7 +76,6 @@ public class RecommendedRepoItemScheduling {
     public List<RepoItem> updateRecentlyCommitRepo() {
         List<RepoItem> repoItems = repoItemRepository.findAll();
         repoItems.sort(Comparator.comparing(RepoItem::getLastCommitAt).reversed());
-        System.out.println("updateRecently = " + repoItems.getFirst().getRepoName());
         System.out.println("캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
         return repoItems;
     }
@@ -90,7 +89,6 @@ public class RecommendedRepoItemScheduling {
     public List<RepoItem> updateMostViewed(){
         List<RepoItem> repoItems = repoItemRepository.findAll();
         repoItems.sort(Comparator.comparingInt(RepoItem::getViewCount).reversed());
-        System.out.println("mostViewed = " + repoItems.getFirst().getRepoName());
         System.out.println("캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
         return repoItems;
     }
