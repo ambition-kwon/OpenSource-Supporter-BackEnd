@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +38,11 @@ public class RecommendedRepoItemScheduling {
     private final CacheManager cacheManager;
 
 
-    @Scheduled(fixedRate = 20000) // 매일 자정에 수행
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 수행
     public void recommendedRepoItemListUp() {
         CompletableFuture<Void> updateRepoItemFromDBFuture = CompletableFuture.runAsync(this::updateRepoItemFromGithub);
-        updateRepoItemFromDBFuture.thenRun(this::updateRecentlyCommitRepo);
-        updateRepoItemFromDBFuture.thenRun(this::updateMostViewed);
+        //updateRepoItemFromDBFuture.thenRun(this::updateRecentlyCommitRepo);
+        //updateRepoItemFromDBFuture.thenRun(this::updateMostViewed);
     }
 
     @Transactional
@@ -76,13 +78,14 @@ public class RecommendedRepoItemScheduling {
     public List<RepoItem> updateRecentlyCommitRepo() {
         List<RepoItem> repoItems = repoItemRepository.findAll();
         repoItems.sort(Comparator.comparing(RepoItem::getLastCommitAt).reversed());
-        System.out.println("캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
+        System.out.println("recently Commit Repo 캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
         return repoItems;
     }
-
-//    public List<RepoItem> updateMySupporter(){
-//
-//        return null;
+// pagenation recently commit repo
+//    @Cacheable(cacheNames = "recentlyCommitRepoCache")
+//    public Page<RepoItem> updateRecentlyCommitRepo(Pageable pageable) {
+//        Page<RepoItem> repoItems = repoItemRepository.findAll(pageable);
+//        return repoItems;
 //    }
 
     @Cacheable(cacheNames = "mostViewedRepoCache") // 캐시 이름 지정
@@ -92,6 +95,18 @@ public class RecommendedRepoItemScheduling {
         System.out.println("캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
         return repoItems;
     }
+
+    // pagenation mostview repo
+//    @Cacheable(cacheNames = "mostViewedRepoCache") // 캐시 이름 지정
+//    public Page<RepoItem> updateMostViewed(Pageable pageable){
+//        Page<RepoItem> repoItems = repoItemRepository.findAll(pageable);
+//        return repoItems;
+//    }
+
+    //public List<RepoItem> updateMySupporter(){
+//
+//        return null;
+//    }
 }
 
 
