@@ -85,4 +85,10 @@ public class RepoItemController {
 //        Page<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed(pageable);
 //        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult.getContent()).build());
 //    }
+
+    @GetMapping("/api/repo/test/GethubAction")
+    public ResponseEntity<String> getTestTextGithubAction(){
+    String testText = "CI/CD 성공~";
+    return ResponseEntity.ok().body(testText);
+    }
 }
