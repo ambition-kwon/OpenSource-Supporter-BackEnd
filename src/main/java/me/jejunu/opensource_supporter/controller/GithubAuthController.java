@@ -27,7 +27,6 @@ public class GithubAuthController {
 
     private final GithubAuthService githubAuthService;
     private final GithubApiService githubApiService;
-    private final GithubApiFeignClient githubApiFeignClient;
     private final RecommendedRepoItemScheduling recommendedRepoItemScheduling;
 
     @Value("${spring.security.oauth2.client.registration.github.client-id}")
