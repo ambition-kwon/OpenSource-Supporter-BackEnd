@@ -28,6 +28,7 @@ out/
 application.yml
 application-local.yml
 data.sql
+src/test/
 
 ### NetBeans ###
 /nbproject/private/
