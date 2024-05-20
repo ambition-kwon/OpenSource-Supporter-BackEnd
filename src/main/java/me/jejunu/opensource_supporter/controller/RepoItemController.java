@@ -86,9 +86,9 @@ public class RepoItemController {
 //        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult.getContent()).build());
 //    }
 
-    @GetMapping("/api/repo/test/GethubAction")
-    public ResponseEntity<String> getTestTextGithubAction(){
-    String testText = "CI/CD 성공~";
+    @GetMapping("/api/repo/test/EC2")
+    public ResponseEntity<String> getTestTextEC2(){
+    String testText = "Successfully deployed OSS backend server on AWS EC2 instance.";
     return ResponseEntity.ok().body(testText);
     }
 
