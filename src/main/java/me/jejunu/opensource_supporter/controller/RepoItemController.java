@@ -92,9 +92,9 @@ public class RepoItemController {
     return ResponseEntity.ok().body(testText);
     }
 
-    @GetMapping("/api/repo/test/GethubActionTrigger")
+    @GetMapping("/api/repo/test/GithubActionTrigger")
     public ResponseEntity<String> getTestTextGithubActionTrigger(){
-        String testText = "인스턴스 업데이트 트리거";
+        String testText = "EC2 서버 OSS Back .jar 업데이트 트리거";
         return ResponseEntity.ok().body(testText);
     }
 
