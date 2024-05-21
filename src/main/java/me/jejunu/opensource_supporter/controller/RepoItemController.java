@@ -88,8 +88,6 @@ public class RepoItemController {
     public ResponseEntity<String> getTestTextGithubAction(){
     String testText = "CI/CD 성공~";
     return ResponseEntity.ok().body(testText);
-        String testText = "CI/CD 성공~";
-        return ResponseEntity.ok().body(testText);
     }
 
     @GetMapping("/api/repo/test/GethubActionTrigger")
