@@ -5,8 +5,6 @@ import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.service.RepoItemService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

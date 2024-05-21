@@ -1,4 +1,5 @@
 package me.jejunu.opensource_supporter.config;
+
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
@@ -9,11 +10,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;

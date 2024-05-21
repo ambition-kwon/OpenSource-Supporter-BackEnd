@@ -1,8 +1,6 @@
 package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.jejunu.opensource_supporter.config.CacheChecker;
-import me.jejunu.opensource_supporter.config.GithubApiFeignClient;
 import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
@@ -11,7 +9,6 @@ import me.jejunu.opensource_supporter.dto.RecommendedRepoCardDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
