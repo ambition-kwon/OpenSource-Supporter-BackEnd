@@ -84,15 +84,4 @@ public class RepoItemController {
 //        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult.getContent()).build());
 //    }
 
-    @GetMapping("/api/repo/test/GethubAction")
-    public ResponseEntity<String> getTestTextGithubAction(){
-    String testText = "CI/CD 성공~";
-    return ResponseEntity.ok().body(testText);
-    }
-
-    @GetMapping("/api/repo/test/GethubActionTrigger")
-    public ResponseEntity<String> getTestTextGithubActionTrigger(){
-        String testText = "인스턴스 업데이트 트리거";
-        return ResponseEntity.ok().body(testText);
-    }
 }
