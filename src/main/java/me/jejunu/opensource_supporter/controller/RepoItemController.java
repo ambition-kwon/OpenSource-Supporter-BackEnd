@@ -5,8 +5,6 @@ import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.service.RepoItemService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -86,17 +84,15 @@ public class RepoItemController {
 //        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult.getContent()).build());
 //    }
 
-    @GetMapping("/api/repo/test/EC2")
-    public ResponseEntity<String> getTestTextEC2(){
-    String testText = "Successfully deployed OSS backend server on AWS EC2 instance.";
+    @GetMapping("/api/repo/test/GethubAction")
+    public ResponseEntity<String> getTestTextGithubAction(){
+    String testText = "CI/CD 성공~";
     return ResponseEntity.ok().body(testText);
     }
 
-    @GetMapping("/api/repo/test/GithubActionTrigger")
+    @GetMapping("/api/repo/test/GethubActionTrigger")
     public ResponseEntity<String> getTestTextGithubActionTrigger(){
-        String testText = "EC2 서버 OSS Back .jar 업데이트 트리거";
+        String testText = "인스턴스 업데이트 트리거";
         return ResponseEntity.ok().body(testText);
     }
-
-
 }

@@ -37,10 +37,16 @@ public class GainedPoint {
     @JoinColumn(name = "uid")
     private User user;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "aid")
+    private Advertisement advertisement;
+
     @Builder
-    public GainedPoint(User user, String method, int price) {
+    public GainedPoint(User user, String method, int price, Advertisement advertisement) {
         this.user = user;
         this.method = method;
         this.price = price;
+        this.advertisement = advertisement;
     }
 }
