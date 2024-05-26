@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class GainedPointCreateRequestDto {
+public class SupportedPointCreateRequestDto {
+    private Long repoId;
     private int price;
 }

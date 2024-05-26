@@ -37,6 +37,7 @@ public class RepoItem {
     @Setter
     private int viewCount;
 
+    @Setter
     private int totalPoint;
 
     private LocalDateTime lastCommitAt;
@@ -52,6 +53,7 @@ public class RepoItem {
     @JoinColumn(name = "uid")
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "repoItem")
     private List<SupportedPoint> supportedPointList;
 
@@ -74,5 +76,15 @@ public class RepoItem {
         this.mostLanguage = mostLanguage;
         this.license = license;
         this.lastCommitAt = lastCommitAt;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void updatePoints(){
+        if(this.supportedPointList != null){
+            this.totalPoint = this.supportedPointList.stream()
+                    .mapToInt(SupportedPoint::getPrice)
+                    .sum();
+        }
     }
 }

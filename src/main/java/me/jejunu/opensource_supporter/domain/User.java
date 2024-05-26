@@ -32,6 +32,7 @@ public class User {
     @Setter
     private int totalPoint;
 
+    @Setter
     private int usedPoint;
 
     private int remainingPoint;
@@ -44,6 +45,7 @@ public class User {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<RepoItem> repoItemList;
 
@@ -68,14 +70,10 @@ public class User {
     @PreUpdate
     public void updatePoints(){
         if (this.gainedPointList != null) {
-            this.totalPoint = this.gainedPointList.stream()
-                    .mapToInt(GainedPoint::getPrice)
-                    .sum();
+            this.totalPoint = this.gainedPointList.stream().mapToInt(GainedPoint::getPrice).sum();
         }
         if (this.supportedPointList != null) {
-            this.usedPoint = this.supportedPointList.stream()
-                    .mapToInt(SupportedPoint::getPrice)
-                    .sum();
+            this.usedPoint = this.supportedPointList.stream().mapToInt(SupportedPoint::getPrice).sum();
         }
         this.remainingPoint = this.totalPoint - this.usedPoint;
     }
