@@ -29,6 +29,9 @@ public class User {
     @Column(updatable = false)
     private String cardLink;
 
+    @Column(updatable = false)
+    private String avatarUrl;
+
     @Setter
     private int totalPoint;
 
@@ -58,8 +61,9 @@ public class User {
     private List<GainedPoint> gainedPointList;
 
     @Builder
-    public User(String userName) {
+    public User(String userName, String avatarUrl) {
         this.userName = userName;
+        this.avatarUrl = avatarUrl;
         this.adLink = "https://www.test.com/adLink";
         this.cardLink = "https://www.test.com/cardLink";
     }
