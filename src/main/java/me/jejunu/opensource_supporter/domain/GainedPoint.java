@@ -40,7 +40,7 @@ public class GainedPoint {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "aid")
-    private Advertisement advertisement;
+    private Advertisement advertisement; //충전 방법이 advertise일 경우 primary key값이 들어가며, paypal일 경우 null이 들어갑니다.
 
     @Builder
     public GainedPoint(User user, String method, int price, Advertisement advertisement) {
