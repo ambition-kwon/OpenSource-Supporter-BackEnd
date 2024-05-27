@@ -19,8 +19,14 @@ public class RepoItemController {
 
     @GetMapping("/api/repos/modal")
     public ResponseEntity<List<RepoItemModalResponseDto>> readMultipleRepoItems(@RequestHeader("Authorization") String authHeader){
-        List<RepoItemModalResponseDto> repos = repoItemService.readMultipleRepoItems(authHeader);
-        return ResponseEntity.ok().body(repos);
+        List<RepoItemModalResponseDto> repoItems = repoItemService.readMultipleRepoItems(authHeader);
+        return ResponseEntity.ok().body(repoItems);
+    }
+
+    @GetMapping("/api/repos/main/partners")
+    public ResponseEntity<List<RepoItem>> readPartnerRepoItems(@RequestHeader("Authorization") String authHeader){
+        List<RepoItem> repoItems = repoItemService.readPartnerRepoItems(authHeader);
+        return ResponseEntity.ok().body(repoItems);
     }
 
     @PostMapping("/api/repo")

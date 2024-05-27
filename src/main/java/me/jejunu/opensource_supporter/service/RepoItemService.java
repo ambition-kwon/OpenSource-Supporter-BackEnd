@@ -9,6 +9,7 @@ import me.jejunu.opensource_supporter.dto.RepoItemDeleteRequestDto;
 import me.jejunu.opensource_supporter.dto.RepoItemModalResponseDto;
 import me.jejunu.opensource_supporter.dto.RepoItemUpdateRequestDto;
 import me.jejunu.opensource_supporter.repository.RepoItemRepository;
+import me.jejunu.opensource_supporter.repository.SupportedPointRepository;
 import me.jejunu.opensource_supporter.repository.UserRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,6 +28,7 @@ public class RepoItemService {
     private final GithubApiService githubApiService;
     private final RepoItemRepository repoItemRepository;
     private final UserRepository userRepository;
+    private final SupportedPointRepository supportedPointRepository;
 
     @Transactional(readOnly = true)
     public List<RepoItemModalResponseDto> readMultipleRepoItems(String authHeader){
@@ -58,6 +60,16 @@ public class RepoItemService {
                     .build());
         }
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<RepoItem> readPartnerRepoItems(String authHeader){
+        String userToken = authHeader.replace("Bearer ", "");
+        JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
+        String userName = userDataResponse.getString("login");
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(()->new IllegalArgumentException("not found user"));
+        return supportedPointRepository.findDistinctRepoItemsByUser(user);
     }
 
     @Transactional

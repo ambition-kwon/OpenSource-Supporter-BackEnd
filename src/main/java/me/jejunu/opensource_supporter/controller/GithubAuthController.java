@@ -58,6 +58,8 @@ public class GithubAuthController {
                 .accessToken(access_token)
                 .remainingPoint(user.getRemainingPoint())
                 .totalPoint(user.getTotalPoint())
+                .adLink(user.getAdLink())
+                .cardLink(user.getCardLink())
                 .build());
     }
 

@@ -1,5 +1,6 @@
 package me.jejunu.opensource_supporter.dto;
 
+import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +17,11 @@ public class GithubAuthLoginResponseDto {
     private String accessToken;
     private int remainingPoint;
     private int totalPoint;
+    private String adLink;
+    private String cardLink;
 
     @Builder
-    public GithubAuthLoginResponseDto(String userName, String customName, String email, String avatarUrl, String accessToken, int remainingPoint, int totalPoint) {
+    public GithubAuthLoginResponseDto(String userName, String customName, String email, String avatarUrl, String accessToken, int remainingPoint, int totalPoint, String adLink, String cardLink) {
         this.userName = userName;
         this.customName = customName;
         this.email = email;
@@ -26,5 +29,7 @@ public class GithubAuthLoginResponseDto {
         this.accessToken = accessToken;
         this.remainingPoint = remainingPoint;
         this.totalPoint = totalPoint;
+        this.adLink = adLink;
+        this.cardLink = cardLink;
     }
 }
