@@ -1,17 +1,41 @@
 package me.jejunu.opensource_supporter.dto;
 
-import lombok.*;
-import me.jejunu.opensource_supporter.domain.RepoItem;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class RecommendedRepoCardDto {
-    private List<RepoItem> recentlyCommitRepoList;
+    private Long id;
+    private String userName;
+    private String repoName;
+    private String description;
+    private List<String> tags;
+    private String mostLanguage;
+    private String license;
+    private String repositoryLink;
+    private int viewCount;
+    private int totalPoint;
+    private LocalDateTime lastCommitAt;
 
     @Builder
-    public RecommendedRepoCardDto(List<RepoItem> recentlyCommitRepoList) {
-        this.recentlyCommitRepoList = recentlyCommitRepoList;
+    public RecommendedRepoCardDto(Long id, String userName, String repoName, String description, List<String> tags, String mostLanguage, String license, String repositoryLink, int viewCount, int totalPoint, LocalDateTime lastCommitAt) {
+        this.id = id;
+        this.userName = userName;
+        this.repoName = repoName;
+        this.description = description;
+        this.tags = tags;
+        this.mostLanguage = mostLanguage;
+        this.license = license;
+        this.repositoryLink = repositoryLink;
+        this.viewCount = viewCount;
+        this.totalPoint = totalPoint;
+        this.lastCommitAt = lastCommitAt;
     }
 }

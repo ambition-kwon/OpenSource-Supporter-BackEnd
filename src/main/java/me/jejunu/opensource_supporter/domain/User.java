@@ -23,13 +23,16 @@ public class User {
     @Column(unique = true)
     private String userName;
 
+    @Setter
+    private String customName;
+
     @Column(updatable = false)
     private String adLink;
 
     @Column(updatable = false)
     private String cardLink;
 
-    @Column(updatable = false)
+    @Setter
     private String avatarUrl;
 
     @Setter
@@ -61,8 +64,9 @@ public class User {
     private List<GainedPoint> gainedPointList;
 
     @Builder
-    public User(String userName, String avatarUrl) {
+    public User(String userName, String customName, String avatarUrl) {
         this.userName = userName;
+        this.customName = customName;
         this.avatarUrl = avatarUrl;
         this.adLink = "https://www.test.com/adLink";
         this.cardLink = "https://www.test.com/cardLink";

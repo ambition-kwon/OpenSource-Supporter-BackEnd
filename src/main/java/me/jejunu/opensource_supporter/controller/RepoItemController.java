@@ -23,12 +23,6 @@ public class RepoItemController {
         return ResponseEntity.ok().body(repoItems);
     }
 
-    @GetMapping("/api/repos/main/partners")
-    public ResponseEntity<List<RepoItem>> readPartnerRepoItems(@RequestHeader("Authorization") String authHeader){
-        List<RepoItem> repoItems = repoItemService.readPartnerRepoItems(authHeader);
-        return ResponseEntity.ok().body(repoItems);
-    }
-
     @PostMapping("/api/repo")
     public ResponseEntity<RepoItem> createRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemCreateRequestDto request){
         RepoItem repoItem = repoItemService.createRepoItem(authHeader, request);
@@ -59,11 +53,18 @@ public class RepoItemController {
         return ResponseEntity.ok().body(responseRepoItem);
     }
 
-    @GetMapping("/api/repo/recommended/recentlyCommit")
-    public ResponseEntity<RecommendedRepoCardDto> getRecentlyCommit(){
-        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
-        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
+    @GetMapping("/api/repo/recommended/myPartners")
+    public ResponseEntity<List<RecommendedRepoCardDto>> getMyPartners(@RequestHeader("Authorization") String authHeader){
+        List<RecommendedRepoCardDto> repoItems = repoItemService.getMyPartners(authHeader);
+        return ResponseEntity.ok().body(repoItems);
     }
+
+//    수정할 것(List<RecommendedRepoCardDto>)
+//    @GetMapping("/api/repo/recommended/recentlyCommit")
+//    public ResponseEntity<RecommendedRepoCardDto> getRecentlyCommit(){
+//        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
+//        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
+//    }
 
 //    @GetMapping("/api/repo/recommended/recentlyCommit")
 //    public ResponseEntity<RecommendedRepoCardDto> getRecentlyCommit(Pageable pageable){
@@ -71,18 +72,12 @@ public class RepoItemController {
 //        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult.getContent()).build());
 //    }
 
-    @GetMapping("/api/repo/recommended/myPartners")
-    public ResponseEntity<RecommendedRepoCardDto> getMyPartners(){
-        //RepoItem myPartnersResponseEntity = 캐싱에서 가져오기
-        //return ResponseEntity.ok().body(myPartnersResponseEntity);
-        return null;
-    }
-
-    @GetMapping("/api/repo/recommended/mostViewed")
-    public ResponseEntity<RecommendedRepoCardDto> getMostViewed(){
-        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
-        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
-    }
+//    수정할 것(List<RecommendedRepoCardDto>)
+//    @GetMapping("/api/repo/recommended/mostViewed")
+//    public ResponseEntity<RecommendedRepoCardDto> getMostViewed(){
+//        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
+//        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
+//    }
 
 //    @GetMapping("/api/repo/recommended/mostViewed")
 //    public ResponseEntity<RecommendedRepoCardDto> getMostViewed(Pageable pageable){

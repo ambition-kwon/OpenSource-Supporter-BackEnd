@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.config.GithubApiFeignClient;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
-import me.jejunu.opensource_supporter.dto.RepoItemCreateRequestDto;
-import me.jejunu.opensource_supporter.dto.RepoItemDeleteRequestDto;
-import me.jejunu.opensource_supporter.dto.RepoItemModalResponseDto;
-import me.jejunu.opensource_supporter.dto.RepoItemUpdateRequestDto;
+import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.repository.RepoItemRepository;
 import me.jejunu.opensource_supporter.repository.SupportedPointRepository;
 import me.jejunu.opensource_supporter.repository.UserRepository;
@@ -20,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,13 +61,29 @@ public class RepoItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<RepoItem> readPartnerRepoItems(String authHeader){
+    public List<RecommendedRepoCardDto> getMyPartners(String authHeader){
         String userToken = authHeader.replace("Bearer ", "");
         JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
         String userName = userDataResponse.getString("login");
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(()->new IllegalArgumentException("not found user"));
-        return supportedPointRepository.findDistinctRepoItemsByUser(user);
+        List<RepoItem> repoItems = supportedPointRepository.findDistinctRepoItemsByUser(user);
+        return repoItems.stream()
+                .map(repoItem -> RecommendedRepoCardDto.builder()
+                        .id(repoItem.getId())
+                        .userName(repoItem.getUser().getUserName())
+                        .repoName(repoItem.getRepoName())
+                        .description(repoItem.getDescription())
+                        .tags(repoItem.getTags())
+                        .mostLanguage(repoItem.getMostLanguage())
+                        .license(repoItem.getLicense())
+                        .repositoryLink(repoItem.getRepositoryLink())
+                        .viewCount(repoItem.getViewCount())
+                        .totalPoint(repoItem.getTotalPoint())
+                        .lastCommitAt(repoItem.getLastCommitAt())
+                        .build())
+                .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
+                .collect(Collectors.toList());
     }
 
     @Transactional
