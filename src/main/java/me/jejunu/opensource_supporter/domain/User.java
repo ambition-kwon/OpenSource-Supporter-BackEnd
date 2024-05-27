@@ -66,6 +66,7 @@ public class User {
         this.avatarUrl = avatarUrl;
         this.adLink = "https://www.test.com/adLink";
         this.cardLink = "https://www.test.com/cardLink";
+        this.isAdmin = false;
     }
 
     //엔티티가 save 혹은 update 되기 일보직전 동작합니다(단, 변경사항 없는 save는 미동작함)
