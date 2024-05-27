@@ -47,6 +47,6 @@ public class SupportedPoint {
         this.user = user;
         this.repoItem = repoItem;
         this.price = price;
-        this.isSent = false;
+        this.isSent = true; //관리자 로직 없으니 일단 전부 승인처리
     }
 }

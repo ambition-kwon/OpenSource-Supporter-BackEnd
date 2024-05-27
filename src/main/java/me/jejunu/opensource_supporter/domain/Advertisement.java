@@ -35,13 +35,15 @@ public class Advertisement {
     @Setter
     private int numberOfSuccessfulCalls;
 
+    private boolean isActive;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "advertisement")
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.REMOVE)
     private List<GainedPoint> gainedPointList;
 
     @Builder
@@ -52,6 +54,7 @@ public class Advertisement {
         this.price = price;
         this.numberOfCalls = 0;
         this.numberOfSuccessfulCalls = 0;
+        this.isActive = true;
     }
 
     public void incrementNumberOfCalls(){

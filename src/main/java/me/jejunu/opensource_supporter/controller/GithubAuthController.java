@@ -46,7 +46,8 @@ public class GithubAuthController {
         System.out.println("`access_token` = " + access_token);
         JSONObject userDataResponse = githubApiService.getUserFromGithub(access_token);
         String userName = userDataResponse.getString("login");
-        User user = githubAuthService.signupOrLogin(userName)
+        String avatarUrl = userDataResponse.optString("avatar_url", null);
+        User user = githubAuthService.signupOrLogin(userName, avatarUrl)
                 .orElseThrow(()->new IllegalArgumentException("user load failed"));
 
         return ResponseEntity.ok().body(GithubAuthLoginResponseDto.builder()
