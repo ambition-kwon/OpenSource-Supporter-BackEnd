@@ -2,10 +2,8 @@ package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
-import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
 import me.jejunu.opensource_supporter.dto.GithubAuthLoginResponseDto;
-import me.jejunu.opensource_supporter.dto.RecommendedRepoCardDto;
 import me.jejunu.opensource_supporter.service.GithubApiService;
 import me.jejunu.opensource_supporter.service.GithubAuthService;
 import org.json.JSONObject;
@@ -14,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,15 +42,16 @@ public class GithubAuthController {
         System.out.println("`access_token` = " + access_token);
         JSONObject userDataResponse = githubApiService.getUserFromGithub(access_token);
         String userName = userDataResponse.getString("login");
+        String customName = userDataResponse.optString("name", "No name");
         String avatarUrl = userDataResponse.optString("avatar_url", null);
-        User user = githubAuthService.signupOrLogin(userName, avatarUrl)
+        User user = githubAuthService.signupOrLogin(userName, avatarUrl, customName)
                 .orElseThrow(()->new IllegalArgumentException("user load failed"));
 
         return ResponseEntity.ok().body(GithubAuthLoginResponseDto.builder()
                 .userName(userName)
-                .customName(userDataResponse.optString("name", null))
+                .customName(user.getCustomName())
                 .email(userDataResponse.optString("email", null))
-                .avatarUrl(userDataResponse.optString("avatar_url", null))
+                .avatarUrl(user.getAvatarUrl())
                 .accessToken(access_token)
                 .remainingPoint(user.getRemainingPoint())
                 .totalPoint(user.getTotalPoint())
@@ -75,11 +72,10 @@ public class GithubAuthController {
         return ResponseEntity.ok().build();
     }
 
-
-    @GetMapping("/api/test")
-    public ResponseEntity<RecommendedRepoCardDto> testTest() {
-        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
-        List<RepoItem> repoResult2 = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
-        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
-    }
+//    @GetMapping("/api/test")
+//    public ResponseEntity<RecommendedRepoCardDto> testTest() {
+//        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
+//        List<RepoItem> repoResult2 = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
+//        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
+//    }
 }

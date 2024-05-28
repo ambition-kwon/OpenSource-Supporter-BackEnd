@@ -71,7 +71,6 @@ public class RecommendedRepoItemScheduling {
             }
         }
         System.out.println("db 업데이트 한 부분이 없어요~");
-
     }
 
     @Cacheable(cacheNames = "recentlyCommitRepoCache")

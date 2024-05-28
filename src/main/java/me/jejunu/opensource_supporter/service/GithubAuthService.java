@@ -31,18 +31,21 @@ public class GithubAuthService {
         }
     }
 
-    public Optional<User> signupOrLogin(String userName, String avatarUrl){
+    public Optional<User> signupOrLogin(String userName, String avatarUrl, String customName){
         Optional<User> user = userRepository.findByUserName(userName);
         if(user.isPresent()){
+            if(!user.get().getCustomName().equals(customName)) user.get().setCustomName(customName);
+            if(!user.get().getAvatarUrl().equals(avatarUrl)) user.get().setAvatarUrl(avatarUrl);
             System.out.println("있는 유저입니다.");
             return user;
         } else {
-            System.out.println("최초 가입입니다.");
             User newUser = userRepository.save(User.builder()
                     .userName(userName)
                     .avatarUrl(avatarUrl)
+                    .customName(customName)
                     .build()
             );
+            System.out.println("최초 가입입니다.");
             return Optional.of(newUser);
         }
     }
