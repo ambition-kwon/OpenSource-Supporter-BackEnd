@@ -2,6 +2,8 @@ package me.jejunu.opensource_supporter.repository;
 
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,4 +21,7 @@ public interface RepoItemRepository extends JpaRepository<RepoItem, Long> {
     List<String> findAllByRepoName();
 
     List<RepoItem> findAll();
+
+    Page<RepoItem> findAllByOrderByLastCommitAtDesc(Pageable pageable);
+    Page<RepoItem> findAllByOrderByViewCountDesc(Pageable pageable);
 }

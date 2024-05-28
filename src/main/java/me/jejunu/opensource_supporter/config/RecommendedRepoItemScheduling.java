@@ -41,8 +41,6 @@ public class RecommendedRepoItemScheduling {
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 수행
     public void recommendedRepoItemListUp() {
         CompletableFuture<Void> updateRepoItemFromDBFuture = CompletableFuture.runAsync(this::updateRepoItemFromGithub);
-        //updateRepoItemFromDBFuture.thenRun(this::updateRecentlyCommitRepo);
-        //updateRepoItemFromDBFuture.thenRun(this::updateMostViewed);
     }
 
     @Transactional
@@ -73,39 +71,6 @@ public class RecommendedRepoItemScheduling {
         System.out.println("db 업데이트 한 부분이 없어요~");
     }
 
-    @Cacheable(cacheNames = "recentlyCommitRepoCache")
-    public List<RepoItem> updateRecentlyCommitRepo() {
-        List<RepoItem> repoItems = repoItemRepository.findAll();
-        repoItems.sort(Comparator.comparing(RepoItem::getLastCommitAt).reversed());
-        System.out.println("recently Commit Repo 캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
-        return repoItems;
-    }
-// pagenation recently commit repo
-//    @Cacheable(cacheNames = "recentlyCommitRepoCache")
-//    public Page<RepoItem> updateRecentlyCommitRepo(Pageable pageable) {
-//        Page<RepoItem> repoItems = repoItemRepository.findAll(pageable);
-//        return repoItems;
-//    }
-
-    @Cacheable(cacheNames = "mostViewedRepoCache") // 캐시 이름 지정
-    public List<RepoItem> updateMostViewed(){
-        List<RepoItem> repoItems = repoItemRepository.findAll();
-        repoItems.sort(Comparator.comparingInt(RepoItem::getViewCount).reversed());
-        System.out.println("캐싱 데이터가 없어요. 새롭게 캐싱 데이터를 작성합니다.");
-        return repoItems;
-    }
-
-    // pagenation mostview repo
-//    @Cacheable(cacheNames = "mostViewedRepoCache") // 캐시 이름 지정
-//    public Page<RepoItem> updateMostViewed(Pageable pageable){
-//        Page<RepoItem> repoItems = repoItemRepository.findAll(pageable);
-//        return repoItems;
-//    }
-
-    //public List<RepoItem> updateMySupporter(){
-//
-//        return null;
-//    }
 }
 
 

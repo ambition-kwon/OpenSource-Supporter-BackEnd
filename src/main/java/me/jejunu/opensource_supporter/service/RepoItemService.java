@@ -10,6 +10,9 @@ import me.jejunu.opensource_supporter.repository.SupportedPointRepository;
 import me.jejunu.opensource_supporter.repository.UserRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,14 +64,15 @@ public class RepoItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecommendedRepoCardDto> getMyPartners(String authHeader){
+    public List<RecommendedRepoCardDto> getMyPartners(String authHeader, Pageable pageable) {
         String userToken = authHeader.replace("Bearer ", "");
         JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
         String userName = userDataResponse.getString("login");
         User user = userRepository.findByUserName(userName)
-                .orElseThrow(()->new IllegalArgumentException("not found user"));
-        List<RepoItem> repoItems = supportedPointRepository.findDistinctRepoItemsByUser(user);
-        return repoItems.stream()
+                .orElseThrow(() -> new IllegalArgumentException("not found user"));
+        Page<RepoItem> repoItemsPage = supportedPointRepository.findDistinctRepoItemsByUser(user, pageable);
+
+        return repoItemsPage.stream()
                 .map(repoItem -> RecommendedRepoCardDto.builder()
                         .id(repoItem.getId())
                         .userName(repoItem.getUser().getUserName())
@@ -225,5 +229,39 @@ public class RepoItemService {
     private boolean isRepoItemExists(String repoName, User user) {
         Optional<RepoItem> existingRepoItem = repoItemRepository.findByRepoNameAndUser(repoName, user);
         return existingRepoItem.isPresent();
+    }
+
+    @Cacheable(cacheNames = "recentlyCommitRepoCache")
+    public List<RecommendedRepoCardDto> updateRecentlyCommitRepo(Pageable pageable) {
+        Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByLastCommitAtDesc(pageable);
+        return repoItemsPage.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Cacheable(cacheNames = "mostViewedRepoCache")
+    public List<RecommendedRepoCardDto> updateMostViewed(Pageable pageable) {
+        Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByViewCountDesc(pageable);
+        return repoItemsPage.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
+    private RecommendedRepoCardDto convertToDto(RepoItem repoItem) {
+        User user = repoItem.getUser();
+        return RecommendedRepoCardDto.builder()
+                .id(repoItem.getId())
+                .userName(repoItem.getUser().getUserName())
+                .repoName(repoItem.getRepoName())
+                .description(repoItem.getDescription())
+                .tags(repoItem.getTags())
+                .mostLanguage(repoItem.getMostLanguage())
+                .license(repoItem.getLicense())
+                .repositoryLink(repoItem.getRepositoryLink())
+                .viewCount(repoItem.getViewCount())
+                .totalPoint(repoItem.getTotalPoint())
+                .lastCommitAt(repoItem.getLastCommitAt())
+                .build();
     }
 }
