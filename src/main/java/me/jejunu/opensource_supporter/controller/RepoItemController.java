@@ -58,8 +58,8 @@ public class RepoItemController {
     @GetMapping("/api/repo/recommended/myPartners")
     public ResponseEntity<List<RecommendedRepoCardDto>> getMyPartners(
             @RequestHeader("Authorization") String authHeader,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<RecommendedRepoCardDto> repoItems = repoItemService.getMyPartners(authHeader, pageable);
         return ResponseEntity.ok(repoItems);
@@ -67,8 +67,8 @@ public class RepoItemController {
 
     @GetMapping("/api/repo/recommended/recentlyCommit")
     public ResponseEntity<List<RecommendedRepoCardDto>> getRecentlyCommit(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<RecommendedRepoCardDto> recentlyCommitRepo = repoItemService.updateRecentlyCommitRepo(pageable);
         return ResponseEntity.ok(recentlyCommitRepo);
@@ -76,8 +76,8 @@ public class RepoItemController {
 
     @GetMapping("/api/repo/recommended/mostViewed")
     public ResponseEntity<List<RecommendedRepoCardDto>> getMostViewed(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<RecommendedRepoCardDto> mostViewedRepo = repoItemService.updateMostViewed(pageable);
         return ResponseEntity.ok(mostViewedRepo);

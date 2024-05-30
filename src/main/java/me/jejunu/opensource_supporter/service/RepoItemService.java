@@ -73,19 +73,7 @@ public class RepoItemService {
         Page<RepoItem> repoItemsPage = supportedPointRepository.findDistinctRepoItemsByUser(user, pageable);
 
         return repoItemsPage.stream()
-                .map(repoItem -> RecommendedRepoCardDto.builder()
-                        .id(repoItem.getId())
-                        .userName(repoItem.getUser().getUserName())
-                        .repoName(repoItem.getRepoName())
-                        .description(repoItem.getDescription())
-                        .tags(repoItem.getTags())
-                        .mostLanguage(repoItem.getMostLanguage())
-                        .license(repoItem.getLicense())
-                        .repositoryLink(repoItem.getRepositoryLink())
-                        .viewCount(repoItem.getViewCount())
-                        .totalPoint(repoItem.getTotalPoint())
-                        .lastCommitAt(repoItem.getLastCommitAt())
-                        .build())
+                .map(this::convertToDto)
                 .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
                 .collect(Collectors.toList());
     }

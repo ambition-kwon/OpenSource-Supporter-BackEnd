@@ -29,6 +29,8 @@ application.yml
 application-local.yml
 data.sql
 src/test/
+test.mv.db
+test.trace.db
 
 ### NetBeans ###
 /nbproject/private/
