@@ -1,7 +1,6 @@
 package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.service.RepoItemService;
@@ -17,11 +16,22 @@ import java.util.List;
 @CrossOrigin
 public class RepoItemController {
     private final RepoItemService repoItemService;
-    private final RecommendedRepoItemScheduling recommendedRepoItemScheduling;
 
     @GetMapping("/api/repos/modal")
     public ResponseEntity<List<RepoItemModalResponseDto>> readMultipleRepoItems(@RequestHeader("Authorization") String authHeader){
         List<RepoItemModalResponseDto> repoItems = repoItemService.readMultipleRepoItems(authHeader);
+        return ResponseEntity.ok().body(repoItems);
+    }
+
+    @GetMapping("/api/repos/supported")
+    public ResponseEntity<List<RecommendedRepoCardDto>> readSupportedRepoItems(@RequestParam("userName") String userName){
+       List<RecommendedRepoCardDto> repoItems = repoItemService.readSupportedRepoItems(userName);
+       return ResponseEntity.ok().body(repoItems);
+    }
+
+    @GetMapping("/api/repos/supporting")
+    public ResponseEntity<List<RecommendedRepoCardDto>> readSupportingRepoItems(@RequestParam("userName") String userName){
+        List<RecommendedRepoCardDto> repoItems = repoItemService.readSupportingRepoItems(userName);
         return ResponseEntity.ok().body(repoItems);
     }
 

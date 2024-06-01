@@ -9,7 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface SupportedPointRepository extends JpaRepository<SupportedPoint, Long> {
     @Query("SELECT DISTINCT sp.repoItem FROM SupportedPoint sp WHERE sp.user = :user")
     Page<RepoItem> findDistinctRepoItemsByUser(@Param("user") User user, Pageable pageable);
+
+    @Query("SELECT DISTINCT sp.repoItem FROM SupportedPoint sp WHERE sp.user = :user")
+    List<RepoItem> findDistinctRepoItemsByUser(@Param("user") User user);
 }

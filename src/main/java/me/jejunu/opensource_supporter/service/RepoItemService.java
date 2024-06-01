@@ -246,9 +246,29 @@ public class RepoItemService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public List<RecommendedRepoCardDto> readSupportedRepoItems(String userName){
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("not found user"));
+        return user.getRepoItemList().stream()
+                .map(this::convertToCardDto)
+                .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecommendedRepoCardDto> readSupportingRepoItems(String userName){
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("not found user"));
+        List<RepoItem> repoItems = supportedPointRepository.findDistinctRepoItemsByUser(user);
+        return repoItems.stream()
+                .map(this::convertToCardDto)
+                .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
+                .toList();
+    }
+
 
     private RecommendedRepoCardDto convertToCardDto(RepoItem repoItem) {
-        User user = repoItem.getUser();
         return RecommendedRepoCardDto.builder()
                 .id(repoItem.getId())
                 .userName(repoItem.getUser().getUserName())
