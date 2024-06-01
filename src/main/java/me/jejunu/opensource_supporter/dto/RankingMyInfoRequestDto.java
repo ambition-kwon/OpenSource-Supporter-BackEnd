@@ -12,14 +12,17 @@ public class RankingMyInfoRequestDto {
     private int rank;
     private String userName;
     private String customName;
+    private String avatarUrl;
     private int usedPoint;
     private double topPercent;
 
     @Builder
-    public RankingMyInfoRequestDto(int rank, String userName, String customName, int usedPoint, double topPercent) {
+
+    public RankingMyInfoRequestDto(int rank, String userName, String customName, String avatarUrl, int usedPoint, double topPercent) {
         this.rank = rank;
         this.userName = userName;
         this.customName = customName;
+        this.avatarUrl = avatarUrl;
         this.usedPoint = usedPoint;
         this.topPercent = topPercent;
     }

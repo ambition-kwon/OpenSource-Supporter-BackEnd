@@ -12,14 +12,16 @@ public class RankingUserInfoRequestDto {
     private int rank;
     private String userName;
     private String customName;
+    private String avatarUrl;
     private int usedPoint;
 
 
     @Builder
-    public RankingUserInfoRequestDto(int rank, String userName, String customName, int usedPoint){
+    public RankingUserInfoRequestDto(int rank, String userName, String customName, String avatarUrl, int usedPoint) {
         this.rank = rank;
         this.userName = userName;
         this.customName = customName;
+        this.avatarUrl = avatarUrl;
         this.usedPoint = usedPoint;
     }
 }

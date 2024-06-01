@@ -12,7 +12,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserName(String userName);
     void deleteByUserName(String userName);
     List<User> findAll();
-
     Page<User> findAllByOrderByUsedPointDesc(Pageable pageable);
     List<User> findAllByOrderByUsedPointDesc();
 }

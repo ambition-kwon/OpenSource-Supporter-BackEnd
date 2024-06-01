@@ -56,30 +56,30 @@ public class RepoItemController {
     }
 
     @GetMapping("/api/repo/recommended/myPartners")
-    public ResponseEntity<List<RecommendedRepoCardDto>> getMyPartners(
+    public ResponseEntity<PagedRepoItemResponseDto> getMyPartners(
             @RequestHeader("Authorization") String authHeader,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<RecommendedRepoCardDto> repoItems = repoItemService.getMyPartners(authHeader, pageable);
-        return ResponseEntity.ok(repoItems);
+        PagedRepoItemResponseDto repoItems = repoItemService.getMyPartners(authHeader, pageable);
+        return ResponseEntity.ok().body(repoItems);
     }
 
     @GetMapping("/api/repo/recommended/recentlyCommit")
-    public ResponseEntity<List<RecommendedRepoCardDto>> getRecentlyCommit(
+    public ResponseEntity<PagedRepoItemResponseDto> getRecentlyCommit(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<RecommendedRepoCardDto> recentlyCommitRepo = repoItemService.updateRecentlyCommitRepo(pageable);
-        return ResponseEntity.ok(recentlyCommitRepo);
+        PagedRepoItemResponseDto recentlyCommitRepo = repoItemService.updateRecentlyCommitRepo(pageable);
+        return ResponseEntity.ok().body(recentlyCommitRepo);
     }
 
     @GetMapping("/api/repo/recommended/mostViewed")
-    public ResponseEntity<List<RecommendedRepoCardDto>> getMostViewed(
+    public ResponseEntity<PagedRepoItemResponseDto> getMostViewed(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<RecommendedRepoCardDto> mostViewedRepo = repoItemService.updateMostViewed(pageable);
-        return ResponseEntity.ok(mostViewedRepo);
+        PagedRepoItemResponseDto mostViewedRepo = repoItemService.updateMostViewed(pageable);
+        return ResponseEntity.ok().body(mostViewedRepo);
     }
 }
