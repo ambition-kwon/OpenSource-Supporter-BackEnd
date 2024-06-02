@@ -281,6 +281,7 @@ public class RepoItemService {
         return RecommendedRepoCardDto.builder()
                 .id(repoItem.getId())
                 .userName(repoItem.getUser().getUserName())
+                .avatarUrl(repoItem.getUser().getAvatarUrl())
                 .repoName(repoItem.getRepoName())
                 .description(repoItem.getDescription())
                 .tags(repoItem.getTags())
