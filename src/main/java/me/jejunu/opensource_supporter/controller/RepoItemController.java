@@ -1,7 +1,6 @@
 package me.jejunu.opensource_supporter.controller;
 
 import lombok.RequiredArgsConstructor;
-import me.jejunu.opensource_supporter.config.RecommendedRepoItemScheduling;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.service.RepoItemService;
@@ -17,11 +16,22 @@ import java.util.List;
 @CrossOrigin
 public class RepoItemController {
     private final RepoItemService repoItemService;
-    private final RecommendedRepoItemScheduling recommendedRepoItemScheduling;
 
     @GetMapping("/api/repos/modal")
     public ResponseEntity<List<RepoItemModalResponseDto>> readMultipleRepoItems(@RequestHeader("Authorization") String authHeader){
         List<RepoItemModalResponseDto> repoItems = repoItemService.readMultipleRepoItems(authHeader);
+        return ResponseEntity.ok().body(repoItems);
+    }
+
+    @GetMapping("/api/repos/supported")
+    public ResponseEntity<List<RecommendedRepoCardDto>> readSupportedRepoItems(@RequestParam("userName") String userName){
+       List<RecommendedRepoCardDto> repoItems = repoItemService.readSupportedRepoItems(userName);
+       return ResponseEntity.ok().body(repoItems);
+    }
+
+    @GetMapping("/api/repos/supporting")
+    public ResponseEntity<List<RecommendedRepoCardDto>> readSupportingRepoItems(@RequestParam("userName") String userName){
+        List<RecommendedRepoCardDto> repoItems = repoItemService.readSupportingRepoItems(userName);
         return ResponseEntity.ok().body(repoItems);
     }
 
@@ -56,30 +66,30 @@ public class RepoItemController {
     }
 
     @GetMapping("/api/repo/recommended/myPartners")
-    public ResponseEntity<List<RecommendedRepoCardDto>> getMyPartners(
+    public ResponseEntity<PagedRepoItemResponseDto> getMyPartners(
             @RequestHeader("Authorization") String authHeader,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<RecommendedRepoCardDto> repoItems = repoItemService.getMyPartners(authHeader, pageable);
-        return ResponseEntity.ok(repoItems);
+        PagedRepoItemResponseDto repoItems = repoItemService.getMyPartners(authHeader, pageable);
+        return ResponseEntity.ok().body(repoItems);
     }
 
     @GetMapping("/api/repo/recommended/recentlyCommit")
-    public ResponseEntity<List<RecommendedRepoCardDto>> getRecentlyCommit(
+    public ResponseEntity<PagedRepoItemResponseDto> getRecentlyCommit(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<RecommendedRepoCardDto> recentlyCommitRepo = repoItemService.updateRecentlyCommitRepo(pageable);
-        return ResponseEntity.ok(recentlyCommitRepo);
+        PagedRepoItemResponseDto recentlyCommitRepo = repoItemService.updateRecentlyCommitRepo(pageable);
+        return ResponseEntity.ok().body(recentlyCommitRepo);
     }
 
     @GetMapping("/api/repo/recommended/mostViewed")
-    public ResponseEntity<List<RecommendedRepoCardDto>> getMostViewed(
+    public ResponseEntity<PagedRepoItemResponseDto> getMostViewed(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        List<RecommendedRepoCardDto> mostViewedRepo = repoItemService.updateMostViewed(pageable);
-        return ResponseEntity.ok(mostViewedRepo);
+        PagedRepoItemResponseDto mostViewedRepo = repoItemService.updateMostViewed(pageable);
+        return ResponseEntity.ok().body(mostViewedRepo);
     }
 }

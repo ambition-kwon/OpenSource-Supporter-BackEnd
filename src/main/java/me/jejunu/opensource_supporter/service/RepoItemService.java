@@ -64,18 +64,21 @@ public class RepoItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecommendedRepoCardDto> getMyPartners(String authHeader, Pageable pageable) {
+    public PagedRepoItemResponseDto getMyPartners(String authHeader, Pageable pageable) {
         String userToken = authHeader.replace("Bearer ", "");
         JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
         String userName = userDataResponse.getString("login");
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(() -> new IllegalArgumentException("not found user"));
         Page<RepoItem> repoItemsPage = supportedPointRepository.findDistinctRepoItemsByUser(user, pageable);
-
-        return repoItemsPage.stream()
-                .map(this::convertToDto)
+        List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
+                .map(this::convertToCardDto)
                 .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
-                .collect(Collectors.toList());
+                .toList();
+        return PagedRepoItemResponseDto.builder()
+                .hasNextPage(repoItemsPage.hasNext())
+                .data(repoCardDtoList)
+                .build();
     }
 
     @Transactional
@@ -220,24 +223,52 @@ public class RepoItemService {
     }
 
     @Cacheable(cacheNames = "recentlyCommitRepoCache")
-    public List<RecommendedRepoCardDto> updateRecentlyCommitRepo(Pageable pageable) {
+    public PagedRepoItemResponseDto updateRecentlyCommitRepo(Pageable pageable) {
         Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByLastCommitAtDesc(pageable);
-        return repoItemsPage.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
+                .map(this::convertToCardDto)
+                .toList();
+        return PagedRepoItemResponseDto.builder()
+                .hasNextPage(repoItemsPage.hasNext())
+                .data(repoCardDtoList)
+                .build();
     }
 
     @Cacheable(cacheNames = "mostViewedRepoCache")
-    public List<RecommendedRepoCardDto> updateMostViewed(Pageable pageable) {
+    public PagedRepoItemResponseDto updateMostViewed(Pageable pageable) {
         Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByViewCountDesc(pageable);
-        return repoItemsPage.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
+                .map(this::convertToCardDto)
+                .toList();
+        return PagedRepoItemResponseDto.builder()
+                .hasNextPage(repoItemsPage.hasNext())
+                .data(repoCardDtoList)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecommendedRepoCardDto> readSupportedRepoItems(String userName){
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("not found user"));
+        return user.getRepoItemList().stream()
+                .map(this::convertToCardDto)
+                .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecommendedRepoCardDto> readSupportingRepoItems(String userName){
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("not found user"));
+        List<RepoItem> repoItems = supportedPointRepository.findDistinctRepoItemsByUser(user);
+        return repoItems.stream()
+                .map(this::convertToCardDto)
+                .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
+                .toList();
     }
 
 
-    private RecommendedRepoCardDto convertToDto(RepoItem repoItem) {
-        User user = repoItem.getUser();
+    private RecommendedRepoCardDto convertToCardDto(RepoItem repoItem) {
         return RecommendedRepoCardDto.builder()
                 .id(repoItem.getId())
                 .userName(repoItem.getUser().getUserName())
