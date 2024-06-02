@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,14 +15,12 @@ public interface RepoItemRepository extends JpaRepository<RepoItem, Long> {
     Optional<RepoItem> findByRepoNameAndUser(String repoName, User user);
     Optional<RepoItem> findByRepoName(String repoName);
 
-    @Query("SELECT DISTINCT r.user.userName FROM RepoItem r")
-    List<String> findAllUserNames();
-
-    @Query("SELECT DISTINCT r.repoName FROM RepoItem r")
-    List<String> findAllByRepoName();
-
     List<RepoItem> findAll();
 
     Page<RepoItem> findAllByOrderByLastCommitAtDesc(Pageable pageable);
     Page<RepoItem> findAllByOrderByViewCountDesc(Pageable pageable);
+
+    @Query("SELECT r FROM RepoItem r JOIN r.user u WHERE r.repoName LIKE %:keyword% OR r.description LIKE %:keyword% OR :keyword MEMBER OF r.tags OR u.userName LIKE %:keyword%")
+    List<RepoItem> searchByKeyword(@Param("keyword") String keyword);
+
 }

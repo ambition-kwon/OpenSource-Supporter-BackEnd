@@ -1,12 +1,12 @@
 package me.jejunu.opensource_supporter.service;
 
 import lombok.RequiredArgsConstructor;
-import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.SupportedPoint;
 import me.jejunu.opensource_supporter.domain.User;
 import me.jejunu.opensource_supporter.dto.CardInfoResponseDto;
 import me.jejunu.opensource_supporter.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,6 +18,7 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public CardInfoResponseDto getCardInfo(String userName){
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(()->new IllegalArgumentException("not found user"));
@@ -33,5 +34,10 @@ public class UserService {
                 .totalDonated(user.getUsedPoint())
                 .donatedRepoList(donatedRepoList)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> searchUsers(String keyword){
+        return userRepository.findByUserNameContainingOrCustomNameContaining(keyword, keyword);
     }
 }

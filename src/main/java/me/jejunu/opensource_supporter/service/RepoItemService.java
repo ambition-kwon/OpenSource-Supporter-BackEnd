@@ -267,6 +267,15 @@ public class RepoItemService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<RecommendedRepoCardDto> searchRepoItems(String keyword){
+        List<RepoItem> repoItems = repoItemRepository.searchByKeyword(keyword);
+        return repoItems.stream()
+                .map(this::convertToCardDto)
+                .sorted(Comparator.comparing(RecommendedRepoCardDto::getLastCommitAt).reversed())
+                .toList();
+    }
+
 
     private RecommendedRepoCardDto convertToCardDto(RepoItem repoItem) {
         return RecommendedRepoCardDto.builder()
