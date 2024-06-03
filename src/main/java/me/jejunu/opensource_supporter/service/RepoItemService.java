@@ -233,8 +233,8 @@ public class RepoItemService {
                 .data(repoCardDtoList)
                 .build();
     }
-
-    @Cacheable(cacheNames = "mostViewedRepoCache")
+//    캐시 제거 테스트(카드 동기화 안됨)
+//    @Cacheable(cacheNames = "mostViewedRepoCache")
     public PagedRepoItemResponseDto updateMostViewed(Pageable pageable) {
         Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByViewCountDesc(pageable);
         List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
