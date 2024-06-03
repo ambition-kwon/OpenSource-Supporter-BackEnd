@@ -14,6 +14,7 @@ import java.util.List;
 public class RecommendedRepoCardDto {
     private Long id;
     private String userName;
+    private String avatarUrl;
     private String repoName;
     private String description;
     private List<String> tags;
@@ -25,9 +26,10 @@ public class RecommendedRepoCardDto {
     private LocalDateTime lastCommitAt;
 
     @Builder
-    public RecommendedRepoCardDto(Long id, String userName, String repoName, String description, List<String> tags, String mostLanguage, String license, String repositoryLink, int viewCount, int totalPoint, LocalDateTime lastCommitAt) {
+    public RecommendedRepoCardDto(Long id, String userName, String avatarUrl, String repoName, String description, List<String> tags, String mostLanguage, String license, String repositoryLink, int viewCount, int totalPoint, LocalDateTime lastCommitAt) {
         this.id = id;
         this.userName = userName;
+        this.avatarUrl = avatarUrl;
         this.repoName = repoName;
         this.description = description;
         this.tags = tags;
