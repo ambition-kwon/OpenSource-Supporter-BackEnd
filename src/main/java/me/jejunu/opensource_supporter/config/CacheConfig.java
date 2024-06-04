@@ -23,6 +23,6 @@ public class CacheConfig {
         return Caffeine.newBuilder()
                 .initialCapacity(100) // 초기 용량
                 .maximumSize(1000) // 최대 용량
-                .expireAfterAccess(30, TimeUnit.SECONDS); // 액세스 후 만료 시간 설정
+                .expireAfterAccess(5, TimeUnit.SECONDS); // 액세스 후 만료 시간 설정
     }
 }
