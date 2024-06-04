@@ -55,22 +55,16 @@ public class RankingService {
         String userName = userDataResponse.getString("login");
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(() -> new IllegalArgumentException("not found user"));
-
         List<User> rankedUsers = getRankedUsers();
         int totalUsers = rankedUsers.size();
-
         // Find the rank of the user and calculate the top percent
         int userRank = rankedUsers.stream()
                 .map(User::getUserName)
                 .toList()
                 .indexOf(userName) + 1;
-
         if (userRank == 0) {
-            throw new IllegalArgumentException("not found user rank");
-        }
-
+            throw new IllegalArgumentException("not found user rank");}
         double topPercent = ((double) userRank / totalUsers) * 100;
-
         return RankingMyInfoRequestDto.builder()
                 .rank(userRank)
                 .userName(user.getUserName())
