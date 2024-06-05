@@ -222,7 +222,7 @@ public class RepoItemService {
         return existingRepoItem.isPresent();
     }
 
-    @Cacheable(cacheNames = "recentlyCommitRepoCache")
+//    @Cacheable(cacheNames = "recentlyCommitRepoCache")
     public PagedRepoItemResponseDto updateRecentlyCommitRepo(Pageable pageable) {
         Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByLastCommitAtDesc(pageable);
         List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
@@ -234,7 +234,7 @@ public class RepoItemService {
                 .build();
     }
 
-    @Cacheable(cacheNames = "mostViewedRepoCache")
+//    @Cacheable(cacheNames = "mostViewedRepoCache")
     public PagedRepoItemResponseDto updateMostViewed(Pageable pageable) {
         Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByViewCountDesc(pageable);
         List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
