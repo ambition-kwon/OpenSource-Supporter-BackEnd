@@ -13,7 +13,9 @@ import java.util.Optional;
 
 public interface RepoItemRepository extends JpaRepository<RepoItem, Long> {
     Optional<RepoItem> findByRepoNameAndUser(String repoName, User user);
-    Optional<RepoItem> findByRepoName(String repoName);
+
+    @Query("SELECT r FROM RepoItem r WHERE r.repoName = :repoName AND r.user.userName = :userName")
+    Optional<RepoItem> findByRepoNameAndUserName(@Param("repoName") String repoName, @Param("userName") String userName);
 
     List<RepoItem> findAll();
 
