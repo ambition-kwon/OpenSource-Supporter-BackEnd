@@ -18,7 +18,7 @@ public interface RepoItemRepository extends JpaRepository<RepoItem, Long> {
     List<RepoItem> findAll();
 
     Page<RepoItem> findAllByOrderByLastCommitAtDesc(Pageable pageable);
-    Page<RepoItem> findAllByOrderByViewCountDesc(Pageable pageable);
+    Page<RepoItem> findAllByOrderByViewCountDescLastCommitAtDesc(Pageable pageable);
 
     @Query("SELECT r FROM RepoItem r JOIN r.user u WHERE r.repoName LIKE %:keyword% OR r.description LIKE %:keyword% OR :keyword MEMBER OF r.tags OR u.userName LIKE %:keyword%")
     List<RepoItem> searchByKeyword(@Param("keyword") String keyword);
