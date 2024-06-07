@@ -13,12 +13,14 @@ import java.util.Optional;
 
 public interface RepoItemRepository extends JpaRepository<RepoItem, Long> {
     Optional<RepoItem> findByRepoNameAndUser(String repoName, User user);
-    Optional<RepoItem> findByRepoName(String repoName);
+
+    @Query("SELECT r FROM RepoItem r WHERE r.repoName = :repoName AND r.user.userName = :userName")
+    Optional<RepoItem> findByRepoNameAndUserName(@Param("repoName") String repoName, @Param("userName") String userName);
 
     List<RepoItem> findAll();
 
     Page<RepoItem> findAllByOrderByLastCommitAtDesc(Pageable pageable);
-    Page<RepoItem> findAllByOrderByViewCountDesc(Pageable pageable);
+    Page<RepoItem> findAllByOrderByViewCountDescLastCommitAtDesc(Pageable pageable);
 
     @Query("SELECT r FROM RepoItem r JOIN r.user u WHERE r.repoName LIKE %:keyword% OR r.description LIKE %:keyword% OR :keyword MEMBER OF r.tags OR u.userName LIKE %:keyword%")
     List<RepoItem> searchByKeyword(@Param("keyword") String keyword);

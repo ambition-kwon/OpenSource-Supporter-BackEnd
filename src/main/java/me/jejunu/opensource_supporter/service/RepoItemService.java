@@ -47,7 +47,7 @@ public class RepoItemService {
             int starCount = jsonObject.getInt("stargazers_count");
             LocalDateTime lastCommitAt = LocalDateTime.parse(jsonObject.getString("pushed_at"),DateTimeFormatter.ISO_DATE_TIME);
 
-            Optional<RepoItem> repoItem = repoItemRepository.findByRepoName(repoName);
+            Optional<RepoItem> repoItem = repoItemRepository.findByRepoNameAndUserName(repoName, userName);
             Long repoId = repoItem.map(RepoItem::getId).orElse(null);
             boolean posted = repoItem.isPresent();
 
@@ -236,7 +236,7 @@ public class RepoItemService {
 
     @Cacheable(cacheNames = "mostViewedRepoCache")
     public PagedRepoItemResponseDto updateMostViewed(Pageable pageable) {
-        Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByViewCountDesc(pageable);
+        Page<RepoItem> repoItemsPage = repoItemRepository.findAllByOrderByViewCountDescLastCommitAtDesc(pageable);
         List<RecommendedRepoCardDto> repoCardDtoList = repoItemsPage.stream()
                 .map(this::convertToCardDto)
                 .toList();

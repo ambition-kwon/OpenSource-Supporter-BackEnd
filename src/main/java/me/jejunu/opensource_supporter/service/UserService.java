@@ -40,4 +40,10 @@ public class UserService {
     public List<User> searchUsers(String keyword){
         return userRepository.findByUserNameContainingOrCustomNameContaining(keyword, keyword);
     }
+
+    @Transactional(readOnly = true)
+    public User getUser(String userName){
+        return userRepository.findByUserName(userName)
+                .orElseThrow(()->new IllegalArgumentException("not found user"));
+    }
 }

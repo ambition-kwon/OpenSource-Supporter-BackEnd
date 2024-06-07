@@ -25,11 +25,11 @@ public class RankingService {
 
     @Cacheable(cacheNames = "pageRank")
     public Page<User> getRankedUsers(Pageable pageable) {
-        return userRepository.findAllByOrderByUsedPointDesc(pageable);
+        return userRepository.findAllByOrderByUsedPointDescCreatedAtAsc(pageable);
     }
     @Cacheable(cacheNames = "listRank")
     public List<User> getRankedUsers() {
-        return userRepository.findAllByOrderByUsedPointDesc();
+        return userRepository.findAllByOrderByUsedPointDescCreatedAtAsc();
     }
 
     public PagedRankResponseDto getUserRankingList(Pageable pageable) {
