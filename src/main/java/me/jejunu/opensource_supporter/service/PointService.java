@@ -76,6 +76,7 @@ public class PointService {
         return repoItem;
     }
 
+    @Transactional(readOnly = true)
     public PagedPointResponseDto getSpentPointList(String authHeader, Pageable pageable){
         String userToken = authHeader.replace("Bearer ", "");
         JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
@@ -97,6 +98,7 @@ public class PointService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public PagedPointResponseDto getEarnedPointList(String authHeader, Pageable pageable){
         String userToken = authHeader.replace("Bearer ", "");
         JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
@@ -118,6 +120,7 @@ public class PointService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public PointSummaryResponseDto getPointSummary(String authHeader){
         int totalSpentPoints = 0;
         int totalPaypalPoints = 0;
