@@ -75,11 +75,15 @@ public class User {
 
     //엔티티가 save 혹은 update 되기 일보직전 동작합니다(단, 변경사항 없는 save는 미동작함)
     //gainedPoint 혹은 supportedPoint가 null일 경우 에러 발생하여 null check 추가하였습니다.
+    //totalPoint는 Paypal 충전 혹은 광고 시청을 통한 보상만 합산합니다.
     @PrePersist
     @PreUpdate
     public void updatePoints(){
         if (this.gainedPointList != null) {
-            this.totalPoint = this.gainedPointList.stream().mapToInt(GainedPoint::getPrice).sum();
+            this.totalPoint = this.gainedPointList.stream()
+                    .filter(gainedPoint -> "Paypal".equals(gainedPoint.getMethod()) || gainedPoint.getMethod().startsWith("Advertisement /"))
+                    .mapToInt(GainedPoint::getPrice)
+                    .sum();
         }
         if (this.supportedPointList != null) {
             this.usedPoint = this.supportedPointList.stream().mapToInt(SupportedPoint::getPrice).sum();

@@ -17,4 +17,8 @@ public interface SupportedPointRepository extends JpaRepository<SupportedPoint, 
 
     @Query("SELECT DISTINCT sp.repoItem FROM SupportedPoint sp WHERE sp.user = :user")
     List<RepoItem> findDistinctRepoItemsByUser(@Param("user") User user);
+
+    Page<SupportedPoint> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+
+    List<SupportedPoint> findByUser(User user);
 }
