@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.dto.*;
 import me.jejunu.opensource_supporter.service.RepoItemService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 public class RepoItemController {
+    @Value("${openai.api-key}")
+    private String openApiKey;
     private final RepoItemService repoItemService;
 
     @GetMapping("/api/repos/modal")
@@ -48,7 +51,7 @@ public class RepoItemController {
     }
 
     @DeleteMapping("/api/repo")
-    public ResponseEntity<Void> deleteRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemDeleteRequestDto request){
+    public ResponseEntity<Void> deleteRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemIdRequestDto request){
         repoItemService.deleteRepoItem(authHeader, request);
         return ResponseEntity.ok().build();
     }
@@ -91,5 +94,11 @@ public class RepoItemController {
         Pageable pageable = PageRequest.of(page, size);
         PagedRepoItemResponseDto mostViewedRepo = repoItemService.updateMostViewed(pageable);
         return ResponseEntity.ok().body(mostViewedRepo);
+    }
+
+    @GetMapping("/api/repo/detail")
+    public ResponseEntity<RepoItemDetailResponseDto> getDetailRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemIdRequestDto request){
+        RepoItemDetailResponseDto response = repoItemService.getDetailRepoItem(authHeader, request, "Bearer " + openApiKey);
+        return ResponseEntity.ok().body(response);
     }
 }

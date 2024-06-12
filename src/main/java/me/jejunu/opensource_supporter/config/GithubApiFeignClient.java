@@ -67,4 +67,22 @@ public interface GithubApiFeignClient {
             @PathVariable("repo") String repo,
             @RequestHeader("Authorization") String authorization
     );
+
+    @GetMapping(value = "/repos/{owner}/{repo}/readme"
+            , consumes =  MediaType.APPLICATION_JSON_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    String getReadme(
+            @PathVariable("owner") String owner,
+            @PathVariable("repo") String repo,
+            @RequestHeader("Authorization") String authorization
+    );
+
+    @GetMapping(value = "/repos/{owner}/{repo}/stats/participation"
+            , consumes =  MediaType.APPLICATION_JSON_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    String getWeeklyCommitList(
+            @PathVariable("owner") String owner,
+            @PathVariable("repo") String repo,
+            @RequestHeader("Authorization") String authorization
+    );
 }
