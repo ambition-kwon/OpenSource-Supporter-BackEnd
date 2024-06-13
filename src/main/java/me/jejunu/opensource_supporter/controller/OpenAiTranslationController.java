@@ -20,9 +20,9 @@ public class OpenAiTranslationController {
     private String apiKey;
 
     @GetMapping("/api/translate")
-    public ResponseEntity<Object> translateText(@RequestBody TranslateRequestDto request){
+    public ResponseEntity<String> translateText(@RequestBody TranslateRequestDto request){
         String authorization = "Bearer " + apiKey;
-        Object response = openAiTranslationService.translateText(request, authorization);
+        String response = openAiTranslationService.translateText(request, authorization);
         return ResponseEntity.ok().body(response);
     }
 }

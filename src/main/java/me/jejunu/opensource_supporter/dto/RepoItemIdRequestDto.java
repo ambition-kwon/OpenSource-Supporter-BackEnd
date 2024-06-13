@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RepoItemDeleteRequestDto {
+public class RepoItemIdRequestDto {
     private Long repoId;
 }

@@ -51,7 +51,7 @@ public class AdvertisementService {
                 .orElseThrow(()->new IllegalArgumentException("not found user"));
         gainedPointRepository.save(GainedPoint.builder()
                 .user(user)
-                .method("advertisement")
+                .method("Advertisement / " + advertisement.getAdName())
                 .price(advertisement.getPrice())
                 .advertisement(advertisement)
                 .build());
