@@ -67,15 +67,16 @@ public class RepoItemService {
             Optional<RepoItem> repoItem = repoItemRepository.findByRepoNameAndUserName(repoName, userName);
             Long repoId = repoItem.map(RepoItem::getId).orElse(null);
             boolean posted = repoItem.isPresent();
-
-            result.add(RepoItemModalResponseDto.builder()
-                    .repoId(repoId)
-                    .repoName(repoName)
-                    .forkCount(forkCount)
-                    .starCount(starCount)
-                    .lastCommitAt(lastCommitAt)
-                    .posted(posted)
-                    .build());
+            if(!jsonObject.getBoolean("fork")) {
+                result.add(RepoItemModalResponseDto.builder()
+                        .repoId(repoId)
+                        .repoName(repoName)
+                        .forkCount(forkCount)
+                        .starCount(starCount)
+                        .lastCommitAt(lastCommitAt)
+                        .posted(posted)
+                        .build());
+            }
         }
         return result;
     }
