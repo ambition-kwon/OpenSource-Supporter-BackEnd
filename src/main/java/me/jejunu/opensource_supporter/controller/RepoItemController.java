@@ -18,6 +18,10 @@ import java.util.List;
 public class RepoItemController {
     @Value("${openai.api-key}")
     private String openApiKey;
+    @Value("${spring.security.oauth2.client.registration.github.client-id}")
+    private String clientId;
+    @Value("${spring.security.oauth2.client.registration.github.client-secret}")
+    private String clientSecret;
     private final RepoItemService repoItemService;
 
     @GetMapping("/api/repos/modal")
@@ -97,8 +101,8 @@ public class RepoItemController {
     }
 
     @GetMapping("/api/repo/detail")
-    public ResponseEntity<RepoItemDetailResponseDto> getDetailRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemIdRequestDto request){
-        RepoItemDetailResponseDto response = repoItemService.getDetailRepoItem(authHeader, request, "Bearer " + openApiKey);
+    public ResponseEntity<RepoItemDetailResponseDto> getDetailRepoItem(@RequestBody RepoItemIdRequestDto request){
+        RepoItemDetailResponseDto response = repoItemService.getDetailRepoItem(clientId, clientSecret, request, "Bearer " + openApiKey);
         return ResponseEntity.ok().body(response);
     }
 }

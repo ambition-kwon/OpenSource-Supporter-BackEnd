@@ -71,11 +71,4 @@ public class GithubAuthController {
         githubAuthService.accountTermination(clientId, clientSecret, authHeader);
         return ResponseEntity.ok().build();
     }
-
-//    @GetMapping("/api/test")
-//    public ResponseEntity<RecommendedRepoCardDto> testTest() {
-//        List<RepoItem> repoResult = recommendedRepoItemScheduling.updateMostViewed();
-//        List<RepoItem> repoResult2 = recommendedRepoItemScheduling.updateRecentlyCommitRepo();
-//        return ResponseEntity.ok().body(RecommendedRepoCardDto.builder().recentlyCommitRepoList(repoResult).build());
-//    }
 }
