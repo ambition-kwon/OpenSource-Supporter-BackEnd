@@ -25,7 +25,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -41,11 +40,11 @@ public class RepoItemService {
     private final SupportedPointRepository supportedPointRepository;
     private final GithubStatsFeignClient githubStatsFeignClient;
     private final OpenAiFeignClient openAiFeignClient;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     private final ConcurrentHashMap<Long, String> readmeCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, List<Integer>> weeklyCommitCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, String> chatGptCache = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 
     @Transactional(readOnly = true)
@@ -311,7 +310,7 @@ public class RepoItemService {
                 byte[] decodedBytes = Base64.getDecoder().decode(base64EncodedString);
                 readmeContent = new String(decodedBytes, StandardCharsets.UTF_8);
                 readmeCache.put(repoItem.getId(), readmeContent);
-                scheduler.schedule(() -> readmeCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
+                scheduledExecutorService.schedule(() -> readmeCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
             } catch (FeignException e) {
                 if (e.status() == 404) {
                     readmeContent = "This repository does not have a README.md file";
@@ -329,7 +328,7 @@ public class RepoItemService {
                 weeklyCommitList.add(weeklyCommit.getInt(i));
             }
             weeklyCommitCache.put(repoItem.getId(), weeklyCommitList);
-            scheduler.schedule(() -> weeklyCommitCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
+            scheduledExecutorService.schedule(() -> weeklyCommitCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
         }
 
         //GitHub stats
@@ -370,13 +369,13 @@ public class RepoItemService {
             List<ChatGptRequestDto.ChatMessageDto> requestMessages = new ArrayList<>();
             String prompt = "내가 Github Repository에 관한 각종 정보를 주면 너는 미사어구 및 필요없는 말을 하지 말고, 이 레포지토리 및 레포지토리 소유자에 대해 투자할 가치가 있는지에 대한 분석 정보만을 명확하게 내게 제공해줘. 최대한 내가 준 내용을 재언급하지 않으면서 너의 생각 및 분석을 위주로 해줘. 답변 언어는 한국어로 부탁해. 먼저 소유자 관련 정보인데 total Starts 는" + totalStars + "이고, total Commits는 " + totalCommits + ", total Pull Requests는 " + totalPullRequests + ", Total Issues는 " + totalIssues + ", Total Contributed to는 " + totalContributions + "이야. 다음은 레포지토리 관련 정보야. 리드미는 다음 소괄호 안의 내용과 같고 (" + readmeContent + ") 디스크립션은 \"" + repoItem.getDescription() + "\" 이 문자열과 같아. 투자할 가치가 있는지 근거를 명확히 해서 분석해줘";
             requestMessages.add(new ChatGptRequestDto.ChatMessageDto("user", prompt));
-            JSONObject chatGpt = new JSONObject(openAiFeignClient.getChatGpt(new ChatGptRequestDto("gpt-3.5-turbo", requestMessages), openApiKey));
+            JSONObject chatGpt = new JSONObject(openAiFeignClient.getChatGpt(new ChatGptRequestDto("gpt-3.5-turbo-1106", requestMessages), openApiKey));
             chatgptAnalysis = chatGpt.getJSONArray("choices")
                     .getJSONObject(0)
                     .getJSONObject("message")
                     .getString("content");
             chatGptCache.put(repoItem.getId(), chatgptAnalysis);
-            scheduler.schedule(() -> chatGptCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
+            scheduledExecutorService.schedule(() -> chatGptCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
         }
 
 

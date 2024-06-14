@@ -17,12 +17,11 @@ public class OpenAiTranslationController {
     private final OpenAiTranslationService openAiTranslationService;
 
     @Value("${openai.api-key}")
-    private String apiKey;
+    private String openApiKey;
 
     @GetMapping("/api/translate")
     public ResponseEntity<String> translateText(@RequestBody TranslateRequestDto request){
-        String authorization = "Bearer " + apiKey;
-        String response = openAiTranslationService.translateText(request, authorization);
+        String response = openAiTranslationService.translateText(request, "Bearer " + openApiKey);
         return ResponseEntity.ok().body(response);
     }
 }
