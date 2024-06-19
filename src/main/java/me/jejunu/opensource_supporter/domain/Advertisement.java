@@ -1,5 +1,6 @@
 package me.jejunu.opensource_supporter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,6 +44,7 @@ public class Advertisement {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.REMOVE)
     private List<GainedPoint> gainedPointList;
 
