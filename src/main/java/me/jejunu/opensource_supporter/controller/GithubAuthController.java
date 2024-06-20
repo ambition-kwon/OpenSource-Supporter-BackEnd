@@ -60,7 +60,7 @@ public class GithubAuthController {
                 .build());
     }
 
-    @GetMapping("/api/refresh")
+    @GetMapping("/api/auth/refresh")
     public ResponseEntity<User> getUserInfoByAccessToken(@RequestHeader("Authorization") String authHeader){
         User user = githubAuthService.getUserInfoByAccessToken(authHeader);
         return ResponseEntity.ok().body(user);
