@@ -60,6 +60,12 @@ public class GithubAuthController {
                 .build());
     }
 
+    @GetMapping("/api/refresh")
+    public ResponseEntity<User> getUserInfoByAccessToken(@RequestHeader("Authorization") String authHeader){
+        User user = githubAuthService.getUserInfoByAccessToken(authHeader);
+        return ResponseEntity.ok().body(user);
+    }
+
     @DeleteMapping("/api/auth/logout")
     public ResponseEntity<Void> handleGithubAccountLogout(@RequestHeader("Authorization") String authHeader){
         githubAuthService.tokenTermination(clientId, clientSecret, authHeader);

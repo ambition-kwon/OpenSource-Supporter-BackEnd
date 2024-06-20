@@ -68,4 +68,12 @@ public class GithubAuthService {
         githubApiFeignClient.tokenTermination(clientId, adminAuth, new GithubTokenDto(userToken));
         System.out.println("Github Access_Token 삭제 완료 / 로그아웃 완료");
     }
+
+    public User getUserInfoByAccessToken(String authHeader){
+        String userToken = authHeader.replace("Bearer ", "");
+        JSONObject userDataResponse = githubApiService.getUserFromGithub(userToken);
+        String userName = userDataResponse.getString("login");
+        return userRepository.findByUserName(userName)
+                .orElseThrow(()->new IllegalArgumentException("not found user"));
+    }
 }
