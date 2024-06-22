@@ -101,8 +101,8 @@ public class RepoItemController {
     }
 
     @GetMapping("/api/repo/detail")
-    public ResponseEntity<RepoItemDetailResponseDto> getDetailRepoItem(@RequestBody RepoItemIdRequestDto request){
-        RepoItemDetailResponseDto response = repoItemService.getDetailRepoItem(clientId, clientSecret, request, "Bearer " + openApiKey);
+    public ResponseEntity<RepoItemDetailResponseDto> getDetailRepoItem(@RequestParam("repoId") Long repoId){
+        RepoItemDetailResponseDto response = repoItemService.getDetailRepoItem(clientId, clientSecret, repoId, "Bearer " + openApiKey);
         return ResponseEntity.ok().body(response);
     }
 }

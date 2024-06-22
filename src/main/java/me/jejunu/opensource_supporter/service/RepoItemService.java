@@ -294,9 +294,9 @@ public class RepoItemService {
     }
 
     @Transactional(readOnly = true)
-    public RepoItemDetailResponseDto getDetailRepoItem(String clientId, String clientSecret, RepoItemIdRequestDto request, String openApiKey) {
+    public RepoItemDetailResponseDto getDetailRepoItem(String clientId, String clientSecret, Long repoId, String openApiKey) {
         String adminAuth = "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
-        RepoItem repoItem = repoItemRepository.findById(request.getRepoId())
+        RepoItem repoItem = repoItemRepository.findById(repoId)
                 .orElseThrow(() -> new IllegalArgumentException("not found repoItem"));
 
         //readme.md file
