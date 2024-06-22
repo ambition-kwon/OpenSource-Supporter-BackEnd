@@ -3,7 +3,6 @@ package me.jejunu.opensource_supporter.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.json.JSONArray;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.List;
 public class RepoItemDetailResponseDto {
     private String avatarUrl;
     private String userName;
+    private String repoName;
     private List<String> tags;
     private String mostLanguage;
     private String license;
@@ -31,9 +31,10 @@ public class RepoItemDetailResponseDto {
     private String chatgptAnalysis;
 
     @Builder
-    public RepoItemDetailResponseDto(String avatarUrl, String userName, List<String> tags, String mostLanguage, String license, String repositoryLink, LocalDateTime lastCommitAt, int viewCount, String description, String readmeContent, List<Integer> weeklyCommitList, int totalCommits, int totalStars, int totalPullRequests, int totalIssues, int totalContributions, String rank, String chatgptAnalysis) {
+    public RepoItemDetailResponseDto(String avatarUrl, String userName, String repoName, List<String> tags, String mostLanguage, String license, String repositoryLink, LocalDateTime lastCommitAt, int viewCount, String description, String readmeContent, List<Integer> weeklyCommitList, int totalCommits, int totalStars, int totalPullRequests, int totalIssues, int totalContributions, String rank, String chatgptAnalysis) {
         this.avatarUrl = avatarUrl;
         this.userName = userName;
+        this.repoName = repoName;
         this.tags = tags;
         this.mostLanguage = mostLanguage;
         this.license = license;

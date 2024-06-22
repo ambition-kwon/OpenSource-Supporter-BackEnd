@@ -66,12 +66,6 @@ public class RepoItemController {
         return ResponseEntity.ok().body(repoItem);
     }
 
-    @PutMapping("/api/repo/view-count")
-    public ResponseEntity<RepoItem> increaseViewCount(@RequestParam("id") Long id){
-        RepoItem responseRepoItem = repoItemService.increaseViewCount(id);
-        return ResponseEntity.ok().body(responseRepoItem);
-    }
-
     @GetMapping("/api/repo/recommended/myPartners")
     public ResponseEntity<PagedRepoItemResponseDto> getMyPartners(
             @RequestHeader("Authorization") String authHeader,

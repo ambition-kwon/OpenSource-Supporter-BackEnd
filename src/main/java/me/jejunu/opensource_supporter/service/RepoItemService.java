@@ -98,15 +98,6 @@ public class RepoItemService {
                 .build();
     }
 
-    @Transactional
-    public RepoItem increaseViewCount(Long id){
-        RepoItem responseRepoItem = repoItemRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("not found RepoItem"));
-        responseRepoItem.setViewCount(responseRepoItem.getViewCount() + 1);
-
-        return responseRepoItem;
-    }
-
     @Transactional(readOnly = true)
     public RepoItem readSingleRepoItem(Long id){
         return repoItemRepository.findById(id)
@@ -293,7 +284,7 @@ public class RepoItemService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public RepoItemDetailResponseDto getDetailRepoItem(String clientId, String clientSecret, Long repoId, String openApiKey) {
         String adminAuth = "Basic " + Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
         RepoItem repoItem = repoItemRepository.findById(repoId)
@@ -375,11 +366,12 @@ public class RepoItemService {
             chatGptCache.put(repoItem.getId(), chatgptAnalysis);
             scheduledExecutorService.schedule(() -> chatGptCache.remove(repoItem.getId()), 10, TimeUnit.MINUTES);
         }
-
+        repoItem.setViewCount(repoItem.getViewCount() + 1); //조회수 증가 로직
 
         return RepoItemDetailResponseDto.builder()
                 .avatarUrl(repoItem.getUser().getAvatarUrl())
                 .userName(repoItem.getUser().getUserName())
+                .repoName(repoItem.getRepoName())
                 .tags(repoItem.getTags())
                 .mostLanguage(repoItem.getMostLanguage())
                 .license(repoItem.getLicense())
