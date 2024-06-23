@@ -324,7 +324,7 @@ public class RepoItemService {
         //GitHub stats
         String userAnalysis = githubStatsFeignClient.getUserAnalysis(repoItem.getUser().getUserName());
         // Rank
-        Pattern rankPattern = Pattern.compile("Rank: ([A-Za-z0-9+]+)</title>");
+        Pattern rankPattern = Pattern.compile("Rank: ([A-Za-z0-9+-]+)");
         Matcher rankMatcher = rankPattern.matcher(userAnalysis);
         String rank = rankMatcher.find() ? rankMatcher.group(1) : "Not Found";
 

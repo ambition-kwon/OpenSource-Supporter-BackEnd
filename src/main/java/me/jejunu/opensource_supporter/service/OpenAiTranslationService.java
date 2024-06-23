@@ -25,7 +25,7 @@ public class OpenAiTranslationService {
         String translation = translationCache.get(cacheKey);
         if(translation == null){
             List<ChatGptRequestDto.ChatMessageDto> requestMessages = new ArrayList<>();
-            String prompt = "특정 언어가 꼭 필요한 부분을 제외하고 다음글을 " + request.getLanguage() + "로 번역해줘 :" + request.getText();
+            String prompt = "특정 언어가 꼭 필요한 부분을 제외하고 다음글을 " + request.getLanguage() + "로 번역해줘. 이 때 만약 내가 준 내용의 언어와 내가 요청하는 언어가 동일할 경우 내가 줬던 내용을 절대 수정 및 삭제 하지말고 그대로 다시 출력해줘 : " + request.getText();
             requestMessages.add(new ChatGptRequestDto.ChatMessageDto("user", prompt));
             JSONObject chatGpt = new JSONObject(openAiFeignClient.getChatGpt(new ChatGptRequestDto("gpt-3.5-turbo-1106", requestMessages), authorization));
             translation = chatGpt.getJSONArray("choices")
