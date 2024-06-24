@@ -111,11 +111,14 @@ public class RepoItemService {
         String userName = userDataResponse.getString("login");
         RepoItem deleteRepoItem = repoItemRepository.findById(request.getRepoId())
                 .orElseThrow(()->new IllegalArgumentException("not found repoItem"));
-        if(Objects.equals(userName, deleteRepoItem.getUser().getUserName())){
+        if(Objects.equals(userName, deleteRepoItem.getUser().getUserName()) && deleteRepoItem.getSupportedPointList() != null){
             repoItemRepository.deleteById(request.getRepoId());
         }
+        else if(!Objects.equals(userName, deleteRepoItem.getUser().getUserName())){
+            throw new RuntimeException("The token owner and the repository owner are different");
+        }
         else{
-            throw new RuntimeException("token 소유자, Repo 소유자 불일치");
+            throw new RuntimeException("This Repository has already received sponsorship");
         }
     }
 
@@ -358,7 +361,7 @@ public class RepoItemService {
             List<ChatGptRequestDto.ChatMessageDto> requestMessages = new ArrayList<>();
             String prompt = "내가 Github Repository에 관한 각종 정보를 주면 너는 미사어구 및 필요없는 말을 하지 말고, 이 레포지토리 및 레포지토리 소유자에 대해 투자할 가치가 있는지에 대한 분석 정보만을 명확하게 내게 제공해줘. 최대한 내가 준 내용을 재언급하지 않으면서 너의 생각 및 분석을 위주로 해줘. 답변 언어는 한국어로 부탁해. 먼저 소유자 관련 정보인데 total Starts 는" + totalStars + "이고, total Commits는 " + totalCommits + ", total Pull Requests는 " + totalPullRequests + ", Total Issues는 " + totalIssues + ", Total Contributed to는 " + totalContributions + "이야. 내가 지금 준 total에 관련된 정보들은 현 유저가 가진 모든 레포지토리에서 일어난 활동들을 종합한 값이라는 것을 인지해줘. 다음은 현 레포지토리 관련 정보야. 전체가 아니라 현재. 리드미는 다음 소괄호 안의 내용과 같고 (" + readmeContent + ") 디스크립션은 \"" + repoItem.getDescription() + "\" 이 문자열과 같아. 그리고 현 레포지토리에 대한 주차별 commit 갯수 인데, 다음 소괄호 안의 배열과 같고 총 1년치의 정보야. (" + weeklyCommitList +") 첫 번째 값이 52주 전의 주당 커밋 갯수고, 마지막 값이 가장 최근 주의 커밋 갯수야. 이 모든 것을 종합해서 투자할 가치가 있는지 근거를 명확히 해서 분석해줘. 최종 의견은 '결론 : ' 양식에 맞춰서 작성해줘";
             requestMessages.add(new ChatGptRequestDto.ChatMessageDto("user", prompt));
-            JSONObject chatGpt = new JSONObject(openAiFeignClient.getChatGpt(new ChatGptRequestDto("gpt-4o", requestMessages), openApiKey));
+            JSONObject chatGpt = new JSONObject(openAiFeignClient.getChatGpt(new ChatGptRequestDto("gpt-3.5-turbo-1106", requestMessages), openApiKey));
             chatgptAnalysis = chatGpt.getJSONArray("choices")
                     .getJSONObject(0)
                     .getJSONObject("message")

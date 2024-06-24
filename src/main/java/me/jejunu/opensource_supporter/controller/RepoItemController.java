@@ -7,6 +7,7 @@ import me.jejunu.opensource_supporter.service.RepoItemService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,9 +56,13 @@ public class RepoItemController {
     }
 
     @DeleteMapping("/api/repo")
-    public ResponseEntity<Void> deleteRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemIdRequestDto request){
-        repoItemService.deleteRepoItem(authHeader, request);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deleteRepoItem(@RequestHeader("Authorization") String authHeader, @RequestBody RepoItemIdRequestDto request){
+        try {
+            repoItemService.deleteRepoItem(authHeader, request);
+            return ResponseEntity.ok().build();
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
     }
 
     @GetMapping("/api/repo")
