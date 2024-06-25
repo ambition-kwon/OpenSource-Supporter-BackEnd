@@ -68,8 +68,8 @@ public class User {
         this.userName = userName;
         this.customName = customName;
         this.avatarUrl = avatarUrl;
-        this.adLink = "https://www.test.com/adLink";
-        this.cardLink = "https://www.test.com/cardLink";
+        this.adLink = "http://opensource-supporter.site/advertisement/" + userName;
+        this.cardLink = "http://opensource-supporter.site/supporter-card/" + userName;
         this.isAdmin = false;
     }
 
