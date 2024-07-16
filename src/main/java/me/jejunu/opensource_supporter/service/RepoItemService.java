@@ -4,7 +4,7 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import me.jejunu.opensource_supporter.config.GithubApiFeignClient;
 import me.jejunu.opensource_supporter.config.GithubStatsFeignClient;
-import me.jejunu.opensource_supporter.config.OpenAiFeignClient;
+import me.jejunu.opensource_supporter.config.OpenAIFeignClient;
 import me.jejunu.opensource_supporter.domain.RepoItem;
 import me.jejunu.opensource_supporter.domain.User;
 import me.jejunu.opensource_supporter.dto.*;
@@ -39,7 +39,7 @@ public class RepoItemService {
     private final UserRepository userRepository;
     private final SupportedPointRepository supportedPointRepository;
     private final GithubStatsFeignClient githubStatsFeignClient;
-    private final OpenAiFeignClient openAiFeignClient;
+    private final OpenAIFeignClient openAIFeignClient;
     private final ScheduledExecutorService scheduledExecutorService;
 
     private final ConcurrentHashMap<Long, String> readmeCache = new ConcurrentHashMap<>();
@@ -358,10 +358,10 @@ public class RepoItemService {
         //chatgpt analysis
         String chatgptAnalysis = chatGptCache.get(repoItem.getId());
         if (chatgptAnalysis == null) {
-            List<ChatGptRequestDto.ChatMessageDto> requestMessages = new ArrayList<>();
+            List<AIRequestDto.ChatMessageDto> requestMessages = new ArrayList<>();
             String prompt = "내가 Github Repository에 관한 각종 정보를 주면 너는 미사어구 및 필요없는 말을 하지 말고, 이 레포지토리 및 레포지토리 소유자에 대해 투자할 가치가 있는지에 대한 분석 정보만을 명확하게 내게 제공해줘. 최대한 내가 준 내용을 재언급하지 않으면서 너의 생각 및 분석을 위주로 해줘. 답변 언어는 영어로 부탁해. 먼저 소유자 관련 정보인데 total Starts 는" + totalStars + "이고, total Commits는 " + totalCommits + ", total Pull Requests는 " + totalPullRequests + ", Total Issues는 " + totalIssues + ", Total Contributed to는 " + totalContributions + "이야. 내가 지금 준 total에 관련된 정보들은 현 유저가 가진 모든 레포지토리에서 일어난 활동들을 종합한 값이라는 것을 인지해줘. 다음은 현 레포지토리 관련 정보야. 전체가 아니라 현재. 리드미는 다음 소괄호 안의 내용과 같고 (" + readmeContent + ") 디스크립션은 \"" + repoItem.getDescription() + "\" 이 문자열과 같아. 그리고 현 레포지토리에 대한 주차별 commit 갯수 인데, 다음 소괄호 안의 배열과 같고 총 1년치의 정보야. (" + weeklyCommitList +") 첫 번째 값이 52주 전의 주당 커밋 갯수고, 마지막 값이 가장 최근 주의 커밋 갯수야. 이 모든 것을 종합해서 투자할 가치가 있는지 근거를 명확히 해서 분석해줘. 최종 의견은 '결론 : ' 양식에 맞춰서 작성해줘";
-            requestMessages.add(new ChatGptRequestDto.ChatMessageDto("user", prompt));
-            JSONObject chatGpt = new JSONObject(openAiFeignClient.getChatGpt(new ChatGptRequestDto("gpt-3.5-turbo-1106", requestMessages), openApiKey));
+            requestMessages.add(new AIRequestDto.ChatMessageDto("user", prompt));
+            JSONObject chatGpt = new JSONObject(openAIFeignClient.getChatGpt(new AIRequestDto("gpt-3.5-turbo-1106", requestMessages), openApiKey));
             chatgptAnalysis = chatGpt.getJSONArray("choices")
                     .getJSONObject(0)
                     .getJSONObject("message")

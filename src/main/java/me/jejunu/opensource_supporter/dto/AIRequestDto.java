@@ -7,11 +7,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ChatGptRequestDto {
+public class AIRequestDto {
     private String model;
     private List<ChatMessageDto> messages;
 
-    public ChatGptRequestDto(String model, List<ChatMessageDto> messages) {
+    public AIRequestDto(String model, List<ChatMessageDto> messages) {
         this.model = model;
         this.messages = messages;
     }
