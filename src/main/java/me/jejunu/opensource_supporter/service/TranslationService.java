@@ -42,7 +42,7 @@ public class TranslationService {
 
     private JSONObject getAIResponse(String aiModel, List<AIRequestDto.ChatMessageDto> requestMessages, String openApiKey, String groqApiKey) {
         if (aiModel.equals("chatgpt")) {
-            return new JSONObject(openAIFeignClient.getChatGpt(new AIRequestDto("gpt-3.5-turbo-1106", requestMessages), openApiKey));
+            return new JSONObject(openAIFeignClient.getChatGpt(new AIRequestDto("gpt-5-mini", requestMessages), openApiKey));
         }
         else if(aiModel.equals("groq")){
             return new JSONObject(groqFeignClient.getGroq(new AIRequestDto("Gemma2-9b-it", requestMessages), groqApiKey));
