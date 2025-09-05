@@ -10,10 +10,17 @@ import java.util.List;
 public class AIRequestDto {
     private String model;
     private List<ChatMessageDto> messages;
+    private Integer max_completion_tokens;
 
     public AIRequestDto(String model, List<ChatMessageDto> messages) {
         this.model = model;
         this.messages = messages;
+
+    }
+    public AIRequestDto(String model, List<ChatMessageDto> messages, Integer max_completion_tokens) {
+        this.model = model;
+        this.messages = messages;
+        this.max_completion_tokens = max_completion_tokens;
     }
 
     @NoArgsConstructor
