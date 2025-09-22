@@ -1,3 +1,6 @@
+mysql_data
+OSSdump.sql
+docker-compose.yml
 HELP.md
 .gradle
 build/
