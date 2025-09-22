@@ -135,12 +135,12 @@ String adminAuth = "Basic " + Base64.getEncoder().encodeToString((clientId + ":"
 - 국내 문서와 달리 GitHub OAuth는 단계별 상세 설명이 부족했던 상황 극복
 
 ```java
-    //BackEnd 테스트용 페이지 리다이렉션 링크
-    @GetMapping("/api/auth/login/page")
-    public RedirectView redirectToGithubAuthPage(){
-        String codeUrl = "https://github.com/login/oauth/authorize?client_id=";
-        String url = codeUrl + clientId;
-        return new RedirectView(url);
+//BackEnd 테스트용 페이지 리다이렉션 링크
+@GetMapping("/api/auth/login/page")
+public RedirectView redirectToGithubAuthPage(){
+    String codeUrl = "https://github.com/login/oauth/authorize?client_id=";
+    String url = codeUrl + clientId;
+    return new RedirectView(url);
     }
 }
 ```
